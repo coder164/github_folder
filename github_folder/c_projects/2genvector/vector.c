@@ -25,7 +25,7 @@ struct Vector {
 
 Vector* VectorCreate(size_t _initialCapacity, size_t _blockSize) {
 	Vector* newVector;
-	if (_initialCapacity == 0 && _blockSize ==0)
+	if (_initialCapacity == 0 && _blockSize == 0)
 	{
 		return NULL;
 	}
@@ -158,7 +158,7 @@ size_t VectorForEach(const Vector* _vector,
 static Vector* EcecuteCreate(size_t _initialCapacity, size_t _blockSize)
 {
 	Vector* newVector;
-	void** arrayPointers;
+	void** arrayPointers = NULL;
 	newVector = (Vector*)malloc(sizeof(Vector));
 	if (NULL == newVector)
 	{
@@ -167,6 +167,7 @@ static Vector* EcecuteCreate(size_t _initialCapacity, size_t _blockSize)
 	arrayPointers = (void**)malloc(_initialCapacity * sizeof(void*));
 	if (NULL == arrayPointers) 
 	{
+		printf("NNNNNNNNNNNNNNNNNNNNNNNNN\n");
 		free(newVector);
 		return NULL;
 	}

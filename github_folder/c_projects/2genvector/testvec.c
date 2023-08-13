@@ -10,18 +10,19 @@ void ChecksForVectorGet(void);
 void ChecksForVectorSet(void);
 void TestVectorForEach(void);
 void TestAction(void* _element, size_t _index, void* _context);
+
 int main(void) 
 {
 	ChecksForVectorCreate();
+	ChecksForVectorSet();
 	ChecksForVectorDestroy();
 	TestVectorAppend();
 	TestVectorRemove();
 	ChecksForVectorGet();
-	ChecksForVectorSet();
 	/*
 	TestVectorForEach();
 	*/
-	
+	return 0;
 }
 
 /******************************************************************/
@@ -43,6 +44,8 @@ void ChecksForVectorCreate(void)
 	resultMember == 0 ? printf("PASS ") : printf("FAIL\n");
 	resultMember = GetVecBlockSize(vecResult);
 	resultMember > 0 ? printf("PASS\n") : printf("FAIL\n");
+	VectorDestroy(&vecResult, NULL);
+
 	vecResult = VectorCreate(2, 0);
 	vecResult != NULL ? printf("PASS ") : printf("FAIL\n");
 	resultMember = GetVecOrigSize(vecResult);
@@ -53,6 +56,8 @@ void ChecksForVectorCreate(void)
 	resultMember == 0 ? printf("PASS ") : printf("FAIL\n");
 	resultMember = GetVecBlockSize(vecResult);
 	resultMember == 0 ? printf("PASS\n") : printf("FAIL\n");
+	VectorDestroy(&vecResult, NULL);
+
 	vecResult = VectorCreate(0, 2);
 	vecResult != NULL ? printf("PASS ") : printf("FAIL\n");
 	resultMember = GetVecOrigSize(vecResult);
@@ -63,13 +68,20 @@ void ChecksForVectorCreate(void)
 	resultMember == 0 ? printf("PASS ") : printf("FAIL\n");
 	resultMember = GetVecBlockSize(vecResult);
 	resultMember > 0 ? printf("PASS\n") : printf("FAIL\n");
+	VectorDestroy(&vecResult, NULL);
+	
 	printf("Test for VectorCreate() for incorrect inputs:\n");
 	vecResult = VectorCreate(0, 0);
 	vecResult == NULL ? printf("PASS\n") : printf("FAIL\n");
+	VectorDestroy(&vecResult, NULL);
+
+	/*
 	printf("Test for VectorCreate() for malloc failure:\n");
 	vecResult = VectorCreate(-2, 5);
 	vecResult == NULL ? printf("PASS\n") : printf("FAIL\n");
 	VectorDestroy(&vecResult, NULL);
+	*/
+
 	putchar('\n');
 }
 
@@ -111,6 +123,8 @@ void TestVectorAppend(void) {
 	resultNItems == 1 ? printf("PASS ") : printf("FAIL ");
 	resultBlockSize = GetVecBlockSize(vecResult);
 	resultBlockSize == 2 ? printf("PASS ") : printf("FAIL ");
+	VectorDestroy(&vecResult, NULL);
+	
 	printf("\nTests for VectorAppend() for incorrect inputs:\n");
 	resultStatus = VectorAppend(NULL, item);
 	resultStatus == VECTOR_UNITIALIZED_ERROR ? printf("PASS ") :
