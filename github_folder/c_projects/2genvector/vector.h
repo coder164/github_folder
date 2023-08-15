@@ -8,8 +8,7 @@
 */
 
 typedef struct Vector Vector;
-typedef int	(*VectorElementAction)(void* _element, size_t _index,
-									void* _context);
+typedef int	(*VectorElementAction)(void* _element, size_t _index, void* _context);
 typedef enum Vector_Result {
 	VECTOR_SUCCESS,
 	VECTOR_GENERAL_ERROR,				/* for errors that not mentioned*/
@@ -42,8 +41,7 @@ arguments:		_vector: the vector to be destroied
 								all the elements of vector. it can also be
 								null if no such destroy is required.
 return value:	none.*/
-void VectorDestroy(Vector** _vector,
-					void (*_elementDestroy)(void* _item));
+void VectorDestroy(Vector** _vector, void (*_elementDestroy)(void* _item));
 
 /*
 description:	add an item to the end of the vector.
@@ -73,7 +71,7 @@ VectorResult VectorRemove(Vector* _vector, void** _pValue);
 description:	get the value of element inside the vector by index and save it
 				in '_pValue'
 arguments:		_vector: Vector
-				_index: position isnside the vector
+				_index: position inside the vector
 				_pValue: pointer to pointer of variable for the
 						 saved data
 return value:	VECTOR_OK
@@ -106,8 +104,8 @@ error:			0 - if vector is empty or invalid */
 size_t VectorCapacity(const Vector* _vector);
 
 /*
-description:	Iterate over all elements in the vector and do the provided
-				action.
+description:	Iterate over all elements in the vector and execute the
+				provided action.
 arguments:		_vector - vector to be iterated over.
 				_action - generic function to be invoked at each iteration.
 				_context - the pointer to be sent to the _action function.
@@ -117,8 +115,7 @@ equivalent to:	for(i = 0; i < VectorSize(v); ++i){
 					if(_action(elem, i, _context) == 0)
 					break;} return i} 
 error:			0 - if _vector or _action is invalid */
-size_t VectorForEach(const Vector* _vector, VectorElementAction _action,
-					void* _context);
+size_t VectorForEach(const Vector* _vector, VectorElementAction _action, void* _context);
 
 #endif /* #ifndef __VECTOR_H__ */
 

@@ -9,7 +9,12 @@ void TestVectorRemove(void);
 void ChecksForVectorGet(void);
 void ChecksForVectorSet(void);
 void TestVectorForEach(void);
-void TestAction(void* _element, size_t _index, void* _context);
+
+int print(void* _element, size_t _index, void* _context)
+{
+	printf("vector[%lu] = %d\n", _index, *(int*)_element);
+	return 0;
+}
 
 int main(void) 
 {
@@ -19,9 +24,7 @@ int main(void)
 	TestVectorAppend();
 	TestVectorRemove();
 	ChecksForVectorGet();
-	/*
 	TestVectorForEach();
-	*/
 	return 0;
 }
 
@@ -235,31 +238,33 @@ void ChecksForVectorSet(void) {
 	putchar('\n');
 }
 
-/*
+
 void TestVectorForEach(void) {
 	Vector* ptrvec = NULL;
-	VectorResult resStatus;
+	size_t countResult1 = 0;
+	size_t countResult2 = 0;
 	int val1 = 10, val2 = 11, val3 = 12, val4 = 13;
 	void* item;
+	size_t i;
 	printf("\nTests for VectorForEach() for invalid inputs:\n");
+	ptrvec = VectorCreate(4, 1);
 	VectorAppend(ptrvec, &val1);
 	VectorAppend(ptrvec, &val2);
 	VectorAppend(ptrvec, &val3);
 	VectorAppend(ptrvec, &val4);
-	resStatus = VectorForEach(ptrvec, NULL, NULL);
-	resStatus = VectorForEach(NULL, NULL, NULL);
-	printf("PASS ");
+	countResult1 = VectorForEach(ptrvec, NULL, NULL);
+	countResult2 = VectorForEach(NULL, NULL, NULL);
+	if (countResult1 == 0 && countResult2 == 0)
+	{
+		printf("PASS\n");
+	}
+	else
+	{
+		printf("FAIL\n");
+	}
+	
 	printf("\nTests for VectorForEach() for valid inputs:\n");
-	resStatus = VectorForEach(ptrvec, , item)
-	putchar('\n');
+	countResult1 = VectorForEach(ptrvec, print, NULL);
+	printf("PASS\n");
 	VectorDestroy(&ptrvec, NULL);
 }
-void TestAction(void* _element, size_t _index, void* _context) {
-	printf("T\nE\nS\nT\n");
-}
-*/
-/*
-typedef int	(*VectorElementAction)(void* _element, size_t _index,
-									void* _context);
-*/
-

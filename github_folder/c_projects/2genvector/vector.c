@@ -136,20 +136,16 @@ size_t VectorCapacity(const Vector* _vector)
 }
 
 size_t VectorForEach(const Vector* _vector,
-					VectorElementAction _action, void* _context)
+	VectorElementAction _action, void* _context)
 {
 	size_t i, size;
-	void* item;
 	if (NULL == _vector || NULL == _action) {
 		return 0;
 	}
 	size = _vector -> m_nItems;
 	for (i = 0; i < size; ++i)
 	{
-		if(_action(_vector -> m_items[i], i, _context) == 0)
-		{
-			break;
-		}
+		_action(_vector -> m_items[i], i, _context);
 	}
 	return i;
 }
@@ -167,7 +163,6 @@ static Vector* EcecuteCreate(size_t _initialCapacity, size_t _blockSize)
 	arrayPointers = (void**)malloc(_initialCapacity * sizeof(void*));
 	if (NULL == arrayPointers) 
 	{
-		printf("NNNNNNNNNNNNNNNNNNNNNNNNN\n");
 		free(newVector);
 		return NULL;
 	}
