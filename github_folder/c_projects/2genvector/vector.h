@@ -1,6 +1,8 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
-#include <stddef.h>  /* size_t, for "vector.c" of other programmers */
+
+#include <stddef.h>  /* for size_t */
+
 /*Author:	Lev
 * Purpose:	To generalize the vector program to handle with all
 *			kinds of data types.
@@ -21,7 +23,7 @@ typedef enum Vector_Result {
 	VECTOR_WRONG_INDEX,
 	VECTOR_OK
 } VectorResult;
-/******************************************************************/
+
 /*
 description:	create a new vector object.
 arguments:		_initialCapacity: the initial number of elements that
@@ -117,13 +119,5 @@ equivalent to:	for(i = 0; i < VectorSize(v); ++i){
 error:			0 - if _vector or _action is invalid */
 size_t VectorForEach(const Vector* _vector, VectorElementAction _action, void* _context);
 
+
 #endif /* #ifndef __VECTOR_H__ */
-
-
-
-
-
-
-
-
-
