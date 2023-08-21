@@ -1,5 +1,6 @@
 #ifndef __GENHEAP_H__
 #define __GENHEAP_H__
+
 #include "vector.h" 
 
 typedef enum HeapResultCode {
