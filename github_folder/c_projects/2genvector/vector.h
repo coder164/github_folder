@@ -3,7 +3,7 @@
 
 #include <stddef.h>  /* for size_t */
 
-/*Author:	Lev
+/*Author:	coder164
 * Purpose:	To generalize the vector program to handle with all
 *			kinds of data types.
 * Date:		21-12-22
