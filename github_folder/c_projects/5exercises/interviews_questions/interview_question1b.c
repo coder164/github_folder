@@ -37,7 +37,7 @@ unsigned int EvaluateNumber(unsigned int _arr[], unsigned int _size);
 
 int main()
 {
-    unsigned int givenArray[ARRAY_SIZE] = {1, 1, 1, 50, 3, 3, 3};
+    unsigned int givenArray[ARRAY_SIZE] = {1, 1, 1, 5, 3, 3, 3};
     unsigned int desiredNumber = 0;
     desiredNumber = SecondMethod(givenArray, ARRAY_SIZE);
     printf("Desired number = %d from SecondMethod()\n", desiredNumber);
