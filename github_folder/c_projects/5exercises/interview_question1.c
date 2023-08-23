@@ -1,5 +1,3 @@
-#include <stdio.h>
-#define ARR_SIZE 7
 /*
 question:
 suppose you have an array of ints where except for one integer all the others occurs two times in the array.
@@ -9,6 +7,8 @@ below is the answer
 each time you do xor for the same number than it becomes zero.
 than only the single number remains.
 */
+#include <stdio.h>
+#define ARR_SIZE 7
 int main()
 {
     int array[ARR_SIZE] = {1, 2, 3, 4, 1, 2, 4};
