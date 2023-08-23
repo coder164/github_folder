@@ -118,8 +118,3 @@ unsigned int EvaluateNumber(unsigned int _arr[], unsigned int _size)
     }
     return number;
 }
-
-/*
-to compile:
-gcc interview_question1b.c -ansi -pedantic -g -lm -o a.out
-*/
