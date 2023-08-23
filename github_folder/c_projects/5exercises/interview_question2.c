@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <math.h>   /* for pow() */
-#define ARRAY_SIZE (7)
-#define INT_SIZE_IN_BITS (32)
-#define BIGGEST_POWER (INT_SIZE_IN_BITS - 1)
-
 /*
 question:
 suppose you have an array of ints where except for one integer all the
@@ -37,28 +31,42 @@ will be zero and you will left with only the bits that representing
 the single number. then you can extract that and you will get your
 number. 
 */
+#include <stdio.h>
+#include <math.h>   /* for pow() */
+#define ARRAY_SIZE (7)
+#define INT_SIZE_IN_BITS (32)
+#define BIGGEST_POWER (INT_SIZE_IN_BITS - 1)
 
-unsigned int FirstMethod( int _givenArray[], int _arraySize);
-unsigned int SecondMethod(const int _givenArray[], int _arraySize);
-void PrintArrayInBits(unsigned int _arr[], unsigned int _size);
-unsigned int EvaluateNumber(unsigned int _arr[], unsigned int _size);
+int FirstMethod( int _givenArray[], unsigned int _arraySize);
+int SecondMethod(const int _givenArray[], unsigned int _arraySize);
+int EvaluateNumber(unsigned int _arr[], unsigned int _size);
+void PrintBitsArray(unsigned int _arr[], unsigned int _size);
 
 int main()
 {
-    int givenArray[ARRAY_SIZE] = {1, 1, 1, 2147483646, 3, 3, 3};
+    int testArray1[ARRAY_SIZE] = {1, 1, 1, 2147483646, 3, 3, 3};
+    int testArray2[ARRAY_SIZE] = {1, 1, 1, -2147483646, 3, 3, 3};
+    int testArray3[ARRAY_SIZE] = {1, 1, 1, 0, 3, 3, 3};
     int desiredNumber = 0;
 
-    desiredNumber = SecondMethod(givenArray, ARRAY_SIZE);
-    printf("Desired number = %d from SecondMethod()\n", desiredNumber);
+    desiredNumber = SecondMethod(testArray1, ARRAY_SIZE);
+    printf("Desired number = %d from SecondMethod(testArray1)\n", desiredNumber);
+    desiredNumber = SecondMethod(testArray2, ARRAY_SIZE);
+    printf("Desired number = %d from SecondMethod(testArray2)\n", desiredNumber);
+    desiredNumber = SecondMethod(testArray3, ARRAY_SIZE);
+    printf("Desired number = %d from SecondMethod(testArray3)\n\n", desiredNumber);
 
-    desiredNumber = 0;
-    desiredNumber = FirstMethod(givenArray, ARRAY_SIZE);
-    printf("Desired number = %d from FirstMethod()\n", desiredNumber);
+    desiredNumber = FirstMethod(testArray1, ARRAY_SIZE);
+    printf("Desired number = %d from FirstMethod(testArray1)\n", desiredNumber);
+    desiredNumber = FirstMethod(testArray2, ARRAY_SIZE);
+    printf("Desired number = %d from FirstMethod(testArray2)\n", desiredNumber);
+    desiredNumber = FirstMethod(testArray3, ARRAY_SIZE);
+    printf("Desired number = %d from FirstMethod(testArray3)\n\n", desiredNumber);
 
     return 0;
 }
 
-unsigned int SecondMethod(const int _givenArray[], int _arraySize)
+int SecondMethod(const int _givenArray[], unsigned int _arraySize)
 {
     unsigned int bitsArray[INT_SIZE_IN_BITS] = {0};
     unsigned int i, j;
@@ -76,7 +84,7 @@ unsigned int SecondMethod(const int _givenArray[], int _arraySize)
     return EvaluateNumber(bitsArray, INT_SIZE_IN_BITS);
 }
 
-unsigned int FirstMethod(int _givenArray[], int _arraySize)
+int FirstMethod(int _givenArray[], unsigned int _arraySize)
 {
     unsigned int bitsArray[INT_SIZE_IN_BITS] = {0};
     unsigned int i, j;
@@ -94,23 +102,7 @@ unsigned int FirstMethod(int _givenArray[], int _arraySize)
     return EvaluateNumber(bitsArray, INT_SIZE_IN_BITS);
 }
 
-void PrintArrayInBits(unsigned int _arr[], unsigned int _size)
-{
-    unsigned int i;
-    unsigned int countForSpace = 4;
-    for (i = 0; i < _size; ++i, --countForSpace)
-    {
-        if (0 == countForSpace)
-        {
-            putchar(' ');
-            countForSpace = 4;
-        }
-        printf("%d ", _arr[i]);
-    }
-    printf("\n\n");
-}
-
-unsigned int EvaluateNumber(unsigned int _arr[], unsigned int _size)
+int EvaluateNumber(unsigned int _arr[], unsigned int _size)
 {
     long int i;
     unsigned int number = 0;
@@ -125,5 +117,21 @@ unsigned int EvaluateNumber(unsigned int _arr[], unsigned int _size)
             number += pow(2, (_size - i - 1));
         }
     }
-    return number;
+    return (int)number;
+}
+
+void PrintBitsArray(unsigned int _arr[], unsigned int _size)
+{
+    unsigned int i;
+    unsigned int countForSpace = 4;
+    for (i = 0; i < _size; ++i, --countForSpace)
+    {
+        if (0 == countForSpace)
+        {
+            putchar(' ');
+            countForSpace = 4;
+        }
+        printf("%d ", _arr[i]);
+    }
+    printf("\n\n");
 }
