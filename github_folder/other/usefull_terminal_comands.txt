@@ -19,3 +19,22 @@ rm 2.png
 to check memory leaks of a c/c++ program
 valgrind --log-file=V3.log --leak-check=full --track-origins=yes -s ./testheap.out
 
+to change the path name in the terminal:
+export PS1="coder164@linuxdell:~$ "
+
+to shorten the directory path that is shown on the terminal to the current directory:
+export PROMPT_DIRTRIM=1
+
+to show the current directory and one above:
+export PROMPT_DIRTRIM=2 
+
+to show the current directory and two above:
+export PROMPT_DIRTRIM=3
+and so on...
+
+to open text file in other window
+gedit -w usefull_terminal_comands.txt
+
+to see large text files on the terminal:
+less usefull_terminal_comands.txt
+
