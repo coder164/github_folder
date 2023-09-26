@@ -3,8 +3,12 @@ first compile all of the function files:
 gcc -c first.c -o first.o
 gcc -c second.c -o second.o
 
-then create the static library, this step bundles your files into one static library.
+then create the static library, this step bundles your files into one static library, which is an archive file that contains all of this files.
 ar rcs lib_mylib.so first.o second.o
+ar is the command to archiev the files. the rcs flags is seperated into three flags. r, c, and s.
+r is for replcing or adding files to if there is already existing archive.
+c is to create an archive if it doesn't exist.
+s is for writing an index or sybbol table to the archive. this index allows for quicker symbol lookup when linking with the archive.
 
 then create a header file for your library
 /* Filename: lib_my_lib.h */
