@@ -1,27 +1,27 @@
 
-first compile all of the function files:
+    first compile all of the function files:
 gcc -c first.c -o first.o
 gcc -c second.c -o second.o
 
-then create the static library, this step bundles your files into one static library, which is an archive file that contains all of this files.
+    then create the static library, this step bundles your files into one static library, which is an archive file that contains all of this files.
 ar rcs lib_mylib.so first.o second.o
-ar is the command to archiev the files. the rcs flags is seperated into three flags. r, c, and s.
+    ar is the command to archiev the files. the rcs flags is seperated into three flags. r, c, and s.
 r is for replcing or adding files to if there is already existing archive.
 c is to create an archive if it doesn't exist.
 s is for writing an index or sybbol table to the archive. this index allows for quicker symbol lookup when linking with the archive.
 
-then create a header file for your library
+    then create a header file for your library
 /* Filename: lib_my_lib.h */
 void First(void);
 void Second(void);
 
-then create your driver program that will use this static library
+    then create your driver program that will use this static library
 
-then compile the driver file
+    then compile the driver file
 gcc -c driver.c -o driver.o
 
-then link the compiled driver program to the static library
+    then link the compiled driver program to the static library
 gcc -o driver.out driver.o -L. lib_mylib.so
 
-then run your program
+    then run your program
 ./driver.out
