@@ -35,5 +35,5 @@ int main()
 
 /* to compile add -pthread at the end of the compilation comand.
 for example:
-gcc -ansi -pedantic -g thread.c -pthread
+gcc -ansi -pedantic -g num_of_threads.c -pthread
 */
