@@ -17,29 +17,30 @@ int main()
 static void MyShell(void) {
 	char strCommand[MAX_STR_SIZE];
 	char* strParameters[MAX_COMMANDS];
-	const char commandEnd[] = " \n";
+	const char delimiters[] = "\n";
 	int status, i, pid;
 	char* token;
+	i = 1;
 	while (TRUE) 
 	{
-		i = 1;
 		printf("\n\tMy prompt\n");
 		fgets(strCommand, MAX_STR_SIZE - 1, stdin);
 		if (ToExit(strCommand))
 		{
 			return;
 		}
-		strParameters[i - 1] = strtok(strCommand, commandEnd);
-		while (strParameters[i] != NULL)
+		token = strtok(strCommand, delimiters);
+		strParameters[i - 1] = token;
+		while (NULL != strParameters[i - 1])
 		{
-			strParameters[i] = strtok(NULL, commandEnd);
-			token = strtok(NULL, commandEnd);
 			printf("\t\tInner while\n");
-			printf("\t\tstrParameters[%d] = %s\n", i, strParameters[i]);
-			if (ToExit(strParameters[i]))
+			printf("\t\ttoken = %s\n", token);
+			if (ToExit(token))
 			{
 				return;
 			}
+			token = strtok(NULL, delimiters);
+			strParameters[i] = token;
 			++i;
 		}
 		printf("\touter while\n");
