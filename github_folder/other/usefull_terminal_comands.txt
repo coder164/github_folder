@@ -38,3 +38,6 @@ gedit -w usefull_terminal_comands.txt
 to see large text files on the terminal:
 less usefull_terminal_comands.txt
 
+open a new terminal from existed one:
+gnome-terminal
+

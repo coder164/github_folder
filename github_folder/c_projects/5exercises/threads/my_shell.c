@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h> /* for strtok */
-#define MAX_STR_SIZE 128
-#define MAX_COMMANDS 18
+#define MAX_COMMAND_LENGTH 128
+#define MAX_NOUMBER_OF_COMMANDS 18
 #define TRUE 1
 #define FALSE 0
 
@@ -15,48 +15,45 @@ int main()
 }
 
 static void MyShell(void) {
-	char strCommand[MAX_STR_SIZE];
-	char* strParameters[MAX_COMMANDS];
-	const char delimiters[] = "\n";
+	char command[MAX_COMMAND_LENGTH];
+	char* commandsList[MAX_NOUMBER_OF_COMMANDS];
+	const char delimiters[] = " \n";
 	int status, i, pid;
 	char* token;
 	i = 1;
 	while (TRUE) 
 	{
 		printf("\n\tMy prompt\n");
-		fgets(strCommand, MAX_STR_SIZE - 1, stdin);
-		if (ToExit(strCommand))
+		fgets(command, MAX_COMMAND_LENGTH - 1, stdin);
+		if (ToExit(command))
 		{
 			return;
 		}
-		token = strtok(strCommand, delimiters);
-		strParameters[i - 1] = token;
-		while (NULL != strParameters[i - 1])
+		commandsList[i - 1] = strtok(command, delimiters);
+		while (NULL != commandsList[i - 1])
 		{
-			printf("\t\tInner while\n");
-			printf("\t\ttoken = %s\n", token);
-			if (ToExit(token))
+			commandsList[i] = strtok(NULL, delimiters);
+			printf("\tInner while\n");
+			printf("\tcommandsList[i] = %s\n", commandsList[i]);
+			if (ToExit(commandsList[i - 1]))
 			{
 				return;
 			}
-			token = strtok(NULL, delimiters);
-			strParameters[i] = token;
 			++i;
 		}
-		printf("\touter while\n");
+		printf("outer while\n");
 		pid = fork();
 		if (pid > 0)
 		{
 			printf("\tparent started.\n");
-			printf("\tpid = %d\n", pid);
 			waitpid(-1, &status, 0);
 			printf("\tparent code ended. status = %d\n", status);
 		}
 		else if (pid == 0)
 		{
 			printf("\t\tchild code\n");
-			printf("\t\tpid = %d\n", pid);
-			execvp(strParameters[0], strParameters);
+			printf("commandsList[0] = %s \t commandsList[1] = %s\n", commandsList[0], commandsList[1]);
+			execvp(commandsList[0], commandsList);
 			printf("\t\tFail\n");
 			break;
 		}
