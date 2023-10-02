@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <string.h> /* for strtok */
+#include <string.h> /* for strtok() */
 #define MAX_COMMAND_LENGTH 128
 #define MAX_NOUMBER_OF_COMMANDS 18
 #define TRUE 1
@@ -19,8 +19,7 @@ static void MyShell(void) {
 	char* commandsList[MAX_NOUMBER_OF_COMMANDS];
 	const char delimiters[] = " \n";
 	int status, i, pid;
-	char* token;
-	i = 1;
+	i = 0;
 	while (TRUE) 
 	{
 		printf("\n\tMy prompt\n");
@@ -29,17 +28,17 @@ static void MyShell(void) {
 		{
 			return;
 		}
-		commandsList[i - 1] = strtok(command, delimiters);
-		while (NULL != commandsList[i - 1])
+		commandsList[i] = strtok(command, delimiters);
+		while (NULL != commandsList[i])
 		{
-			commandsList[i] = strtok(NULL, delimiters);
 			printf("\tInner while\n");
 			printf("\tcommandsList[i] = %s\n", commandsList[i]);
-			if (ToExit(commandsList[i - 1]))
+			if (ToExit(commandsList[i]))
 			{
 				return;
 			}
 			++i;
+			commandsList[i] = strtok(NULL, delimiters);
 		}
 		printf("outer while\n");
 		pid = fork();
