@@ -6,6 +6,7 @@
 #define FALSE 0
 
 static void MyShell(void);
+static int ToExit(const char* const _command);
 
 int main()
 {
@@ -17,39 +18,56 @@ static void MyShell(void) {
 	char strCommand[MAX_STR_SIZE];
 	char* strParameters[MAX_COMMANDS];
 	const char commandEnd[] = " \n";
-	int status, i;
+	int status, i, pid;
 	char* token;
 	while (TRUE) 
 	{
 		i = 1;
-		printf("My prompt\n");
+		printf("\n\tMy prompt\n");
 		fgets(strCommand, MAX_STR_SIZE - 1, stdin);
-		if (strcmp(strCommand, "exit\n") == 0)
+		if (ToExit(strCommand))
 		{
 			return;
 		}
-		strParameters[0] = strtok(strCommand, commandEnd);
-		while (strParameters[i - 1] != NULL)
+		strParameters[i - 1] = strtok(strCommand, commandEnd);
+		while (strParameters[i] != NULL)
 		{
 			strParameters[i] = strtok(NULL, commandEnd);
 			token = strtok(NULL, commandEnd);
-			if (strcmp(strParameters[i],"exit\n") == 0)
+			printf("\t\tInner while\n");
+			printf("\t\tstrParameters[%d] = %s\n", i, strParameters[i]);
+			if (ToExit(strParameters[i]))
 			{
 				return;
 			}
 			++i;
-		}		
-		if (fork() > 0)
-		{
-			/* Parent Code */
-			waitpid(-1, &status, 0);
 		}
-		else 
+		printf("\touter while\n");
+		pid = fork();
+		if (pid > 0)
 		{
-			/* Child code */
+			printf("\tparent started.\n");
+			printf("\tpid = %d\n", pid);
+			waitpid(-1, &status, 0);
+			printf("\tparent code ended. status = %d\n", status);
+		}
+		else if (pid == 0)
+		{
+			printf("\t\tchild code\n");
+			printf("\t\tpid = %d\n", pid);
 			execvp(strParameters[0], strParameters);
-			printf("Fail\n");
+			printf("\t\tFail\n");
+			break;
+		}
+		else
+		{
+			printf("pid < 0, there is an error\n");
 		}
 	}
+	printf("exiting from MyShell()\n");
 }
 
+static int ToExit(const char* const _command)
+{
+	return (strcmp(_command, "exit\n") == 0) ? TRUE : FALSE;
+}
