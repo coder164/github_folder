@@ -41,3 +41,9 @@ less usefull_terminal_comands.txt
 open a new terminal from existed one:
 gnome-terminal
 
+copy folder with all its content:
+cp -r 7projhearts ../
+
+generate random serial with underscore instead of dash:
+uuidgen | tr '-' '_'
+

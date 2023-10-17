@@ -1,4 +1,4 @@
-Project Card Game Hearts
+Project card game 'hearts'
 
 The goal of this project is to imitate the classic card game Hearts, using only algorithms and logic without a graphical user interface. The game involves four players, with one human player and three computer-controlled players. The objective is to acquire the fewest points possible, with each player who reaches 100 points being eliminated from the game. The player who remains at the end is declared the winner.
 
