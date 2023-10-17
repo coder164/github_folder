@@ -1,10 +1,11 @@
-#include <stdlib.h> /* for malloc */
-#include <string.h> /* for strcpy */
+#include <stdlib.h>                     /* for malloc */
+#include <string.h>                     /* for strcpy */
+
 #include "player.h"
+#include "../../2genvector/vector.h"    /* for cards vector */
 #include "../cards/cards.h"
-#include "../../2genvector/vector.h" /* for cards vector */
-#include "../errstat.h" /* for statuses of errors*/
-#include "../deck/deck.h" /* for CARDS_FACTOR*/
+#include "../deck/deck.h"               /* for CARDS_FACTOR*/
+#include "../errstat.h"                 /* for status errors*/
 
 #define MAX_NAME_LENGTH 30
 

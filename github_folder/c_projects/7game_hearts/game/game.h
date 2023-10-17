@@ -1,6 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+
 #include "../player/player.h" /* for PlayerType */
 #include "../errstat.h" /* for error statuses */
 
@@ -28,5 +29,6 @@ errors:			none.*/
 void GameDestroy(Game** _game);
 
 ERRStat GameRun(Game* _game);
+
 
 #endif /* __GAME_H__ */

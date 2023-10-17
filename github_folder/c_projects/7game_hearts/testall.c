@@ -1,7 +1,6 @@
 #include <stdio.h>
+
 #include "game/game.h"
-#include "round/round.h"
-#include "player/player.h"
 #define NUM_OF_PLAYERS 4
 
 int main(void)

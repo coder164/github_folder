@@ -1,10 +1,11 @@
-#include <stdlib.h>             /* for malloc */
+#include <stdlib.h>                     /* for malloc */
+
 #include "round.h"
+#include "../../2genvector/vector.h"    /* for m_deck */
+#include "../cards/cards.h"             /* for Cards object*/
 #include "../deck/deck.h"
 #include "../player/player.h"
-#include "../errstat.h"         /* for error statuses */
-#include "../../2genvector/vector.h" /* for m_deck */
-#include "../cards/cards.h"     /* for Cards object*/
+#include "../errstat.h"                 /* for error statuses */
 
 /* declare assistance funcs for tests */
 void DestroyPlayersFromTest(Round* _round);
@@ -18,7 +19,7 @@ static ERRStat CreateSingleCard(void** _card); /* for _arrCards */
 
 struct Round {
     Player** m_players; /* array of Players*/
-    Deck* m_deck; /* pointer to the Deck */
+    Deck* m_deck;       /* pointer to the Deck */
     int* m_playersPoints;
     int m_numOfPlayers;
 };

@@ -2,9 +2,9 @@
 #define __ROUND_H__
 
 
-#include "../errstat.h" /* for error statuses */
-#include "player.h" /* for RoundCreate() function */
-#include "../cards/cards.h" /* for the pointer functions */
+#include "../errstat.h"         /* for error statuses */
+#include "../player/player.h"   /* for RoundCreate() function */
+#include "../cards/cards.h"     /* for the pointer functions */
 
 typedef struct Round Round;
 
@@ -61,5 +61,6 @@ arguments:		_round: pointer to the Round object.
 return value:	ERROR_SUCCESS: if all went well.
 errors:			ERROR_POINTER_NULL: if _round is invalid.*/
 ERRStat RunRound(Round* _round, TransferDirection _direction);
+
 
 #endif /* __ROUND_H__ */

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "deck.h"
-#include "vector.h"
+#include "../../2genvector/vector.h"
 #define OK 0;
 
 

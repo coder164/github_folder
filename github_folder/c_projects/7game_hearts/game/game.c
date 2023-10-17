@@ -1,9 +1,10 @@
 #include <stdlib.h>         /* for malloc() and for NULL*/
 #include <stdbool.h>
+
 #include "game.h"
-#include "../errstat.h"     /* for error statuses */
 #include "../round/round.h"
 #include "../player/player.h"
+#include "../errstat.h"     /* for error statuses */
 
 struct Game {
     Player** m_players;     /* array of Players*/

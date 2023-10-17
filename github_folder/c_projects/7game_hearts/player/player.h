@@ -1,6 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+
 #include "../errstat.h" /* for statuses of errors*/
 #define NUM_OF_PLAYERS 4
 
@@ -47,4 +48,6 @@ arguments:		_player: pointer to the player.
 return value:	the removed card from player.
 errors:			ERROR_POINTER_NULL: if _player is invalid. */
 void* TakeCardFromPlayer(Player* _player);
+
+
 #endif /* __PLAYER_H__ */

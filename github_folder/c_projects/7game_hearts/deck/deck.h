@@ -2,7 +2,7 @@
 #define __DECK_H__
 
 
-#include "cards.h"
+#include "../cards/cards.h"
 #define CARDS_FACTOR 52
 
 typedef struct Deck Deck;
@@ -34,4 +34,6 @@ arguments:		_deck: the deck.
 return value:	the card that have been removed.
 errors:			NULL - if _deck is invalid.*/
 Cards* TakeCardFromDeck(Deck* _deck);
+
+
 #endif /* __DECK_H__ */

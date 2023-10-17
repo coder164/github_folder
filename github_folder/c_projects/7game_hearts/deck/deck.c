@@ -1,7 +1,8 @@
 #include <stdlib.h>
+
 #include "deck.h"
-#include "cards.h"
-#include "vector.h"
+#include "../cards/cards.h"
+#include "../../2genvector/vector.h"
 
 #define SHUFFLE_FACTOR 64
 
