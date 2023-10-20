@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h> /* for strcmp */
 #include "player.h"
-#include "cards.h" /* for Test GiveCardToPlayer */
-#include "deck.h" /* for Test GiveCardToPlayer */
+#include "cards.h"	/* for Test GiveCardToPlayer */
+#include "deck.h"	/* for Test GiveCardToPlayer */
 #define MAX_NAME_LENGTH 30
 #define OK 0
 

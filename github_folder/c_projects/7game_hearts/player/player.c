@@ -3,7 +3,7 @@
 
 #include "player.h"
 #include "../../2genvector/vector.h"    /* for cards vector */
-#include "../cards/cards.h"
+#include "../cards/cards.h"             /* for Card object*/
 #include "../deck/deck.h"               /* for CARDS_FACTOR*/
 #include "../errstat.h"                 /* for status errors*/
 
