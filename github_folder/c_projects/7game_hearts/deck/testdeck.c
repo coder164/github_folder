@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>	/* for free() in TestTakeCardFromDeck() */
+
 #include "deck.h"
 #include "../../2genvector/vector.h"
 #define OK 0;
@@ -12,10 +14,8 @@ static void TestTakeCardFromDeck(void);
 int main(void)
 {
 	printf("Tests\n");
-	/*
 	TestDeckCreate();
 	TestDeckDestroy();
-	*/
 	TestShuffleCards();
 	TestTakeCardFromDeck();
 	return OK;
@@ -47,26 +47,26 @@ static void TestDeckDestroy(void)
 
 static void TestShuffleCards(void)
 {
-	Deck* ptrDeck = NULL;
-	Deck* resShuffle = NULL;
+	Deck* ptrDeck;
 	printf("Test TestShuffleCards() for valid ptrDeck ");
 	ptrDeck = DeckCreate();
-	resShuffle = ShuffleCards(ptrDeck);
-	resShuffle != NULL ? printf("- PASS\n") : printf("- FAIL \n");
-	printf("Test TestShuffleCards() for NULL ");
-	resShuffle = ShuffleCards(NULL);
-	resShuffle == NULL ? printf("- PASS\n") : printf("- FAIL \n");
+	ptrDeck = ShuffleCards(ptrDeck);
+	ptrDeck != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	DeckDestroy(&ptrDeck);
+	printf("Test TestShuffleCards() for NULL ");
+	ptrDeck = ShuffleCards(NULL);
+	ptrDeck == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 }
 
 static void TestTakeCardFromDeck(void)
 {
 	Deck* ptrDeck = NULL;
-	Cards* resTakeCard = NULL;
+	Card* resTakeCard = NULL;
 	printf("Test TakeCardFromDeck() for valid ptrDeck ");
 	ptrDeck = DeckCreate();
 	resTakeCard = TakeCardFromDeck(ptrDeck);
 	resTakeCard != NULL ? printf("- PASS\n") : printf("- FAIL \n");
+	free(resTakeCard);
 	printf("Test TakeCardFromDeck() for NULL ");
 	resTakeCard = TakeCardFromDeck(NULL);
 	resTakeCard == NULL ? printf("- PASS\n") : printf("- FAIL \n");
