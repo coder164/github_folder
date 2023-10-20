@@ -27,13 +27,6 @@ errors:			none.*/
 void PlayerDestroy(Player** _player);
 
 /*
-description:	destroy Vector of cards at the player object.
-arguments:		_player: pointer of pointer to the player.
-return value:	none.
-errors:			none.*/
-void CardsDestroy(Player** _player);
-
-/*
 description:	give a single card to the specified player.
 arguments:		_player: pointer to the player.
                 _card: the card.

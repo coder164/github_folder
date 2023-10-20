@@ -9,22 +9,25 @@
 
 #define MAX_NAME_LENGTH 30
 
-/* assistance functions for tests */
+/***************** Assitance Inner Functions ******************/
+static int SearchCorrectIndex(Player* _player, Card* _card);
+static ERRStat IsSuitLower(Card* _card, Card* _tempCard);
+static ERRStat IsSameSuit(Card* _card, Card* _tempCard);
+static ERRStat IsRankLower(Card* _card, Card* _tempCard);
+static ERRStat DoInsertion(Player* _player, Card* _card,
+    int _index);
+
+static void DestroyCard(void* _card);
+
+/*************** Assistance Functions for Tests ***************/
 void GetName(Player* _player, char* _item);
 int GetNumOfCards(Player* _player);
-/* assitance inner functions */
-static int SearchCorrectIndex(Player* _player, Cards* _card);
-static ERRStat IsSuitLower(Cards* _card, Cards* _tempCard);
-static ERRStat IsSameSuit(Cards* _card, Cards* _tempCard);
-static ERRStat IsRankLower(Cards* _card, Cards* _tempCard);
-static ERRStat DoInsertion(Player* _player, Cards* _card,
-    int _index);
 
 struct Player {
     char m_name[MAX_NAME_LENGTH];
     Vector* m_cards;
     PlayerType m_type;
-    int m_numOfCards; /* actual number of cards at the palyer */
+    int m_numOfCards; /* actual number of cards at the player */
 };
 
 Player* PlayerCreate(char _name[], PlayerType _type)
@@ -55,24 +58,18 @@ Player* PlayerCreate(char _name[], PlayerType _type)
 
 void PlayerDestroy(Player** _player)
 {
-    if (NULL == _player)
+    if (NULL == _player || NULL == *_player)
     {
         return;
     }
-    CardsDestroy(_player);
+    else if (NULL != (*_player) -> m_cards)
+    {
+        VectorDestroy(&((*_player) -> m_cards), DestroyCard);
+        free((*_player) -> m_cards);
+        (*_player) -> m_cards = NULL;
+    }
     free(*_player);
     *_player = NULL;
-}
-
-void CardsDestroy(Player** _player)
-{
-    if (NULL == _player || NULL == *_player || 0 == (*_player) -> m_numOfCards)
-    {
-        return;
-    }
-    VectorDestroy(&((*_player) -> m_cards), NULL);
-    free((*_player) -> m_cards);
-    (*_player) -> m_cards = NULL;
 }
 
 ERRStat GiveCardToPlayer(Player* _player, void* _card)
@@ -106,7 +103,7 @@ void* TakeCardFromPlayer(Player* _player)
 
 /******************** Assistance Functions ********************/
 
-static int SearchCorrectIndex(Player* _player, Cards* _card)
+static int SearchCorrectIndex(Player* _player, Card* _card)
 {
     void* tempCard;
     int index;
@@ -126,22 +123,22 @@ static int SearchCorrectIndex(Player* _player, Cards* _card)
     }
     return index;
 }
-static ERRStat IsSuitLower(Cards* _card, Cards* _tempCard)
+static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
 {
     return ((_card -> m_suit) < (_tempCard -> m_suit)) ? TRUE : FALSE;
 }
 
-static ERRStat IsSameSuit(Cards* _card, Cards* _tempCard)
+static ERRStat IsSameSuit(Card* _card, Card* _tempCard)
 {
     return ((_card -> m_suit) == (_tempCard -> m_suit)) ? TRUE : FALSE;
 }
 
-static ERRStat IsRankLower(Cards* _card, Cards* _tempCard)
+static ERRStat IsRankLower(Card* _card, Card* _tempCard)
 {
     return ((_card -> m_rank) < (_tempCard -> m_rank)) ? TRUE : FALSE;
 }
 
-static ERRStat DoInsertion(Player* _player, Cards* _card,
+static ERRStat DoInsertion(Player* _player, Card* _card,
     int _index)
 {
     int j;
@@ -155,7 +152,14 @@ static ERRStat DoInsertion(Player* _player, Cards* _card,
     _player -> m_numOfCards += 1;
     ERROR_SUCCESS;
 }
+
+static void DestroyCard(void* _card)
+{
+    free(_card);
+}
+
 /*************** assistance functions for tests ***************/
+
 void GetName(Player* _player, char* _item)
 {
     strcpy(_item, _player -> m_name);

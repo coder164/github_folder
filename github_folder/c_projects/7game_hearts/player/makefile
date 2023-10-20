@@ -24,7 +24,8 @@ player.o: player.c player.h $(P_CARDS)cards.h $(P_VEC)vector.c $(P_ERRSTAT)errst
 testplayer.o: testplayer.c $(P_CARDS)cards.h $(P_ERRSTAT)errstat.h $(P_DECK)deck.h
 	$(CC) $(CFLAGS) -I $(P_CARDS) -I $(P_ERRSTAT) -I $(P_DECK) -c testplayer.c
 
+valgrind:
+	valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./testplayer.out
+
 clean:
-	rm -f $(TARGET) $(OBJS)
-
-
+	rm -f $(TARGET) $(OBJS) V2.log

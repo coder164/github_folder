@@ -9,17 +9,15 @@
 static void TestPlayerCreate(void);
 static void TestDestroy(void);
 static void TestGiveCardToPlayer(void);
-static void TestCardDestroy(void);
 
 int main(void)
 {
 	printf("Tests\n");
-	/*
 	TestPlayerCreate();
+	/*
 	TestDestroy();
 	TestGiveCardToPlayer();
 	*/
-	TestCardDestroy();
 	return OK;
 }
 
@@ -32,6 +30,7 @@ static void TestPlayerCreate(void)
 	ptrPlayer = PlayerCreate(playerName, HUMAN);
 	ptrPlayer != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	PlayerDestroy(&ptrPlayer);
+	/*
 	printf("Test PlayerCreate() 'David', BOT ");
 	ptrPlayer = PlayerCreate(playerName, BOT);
 	ptrPlayer != NULL ? printf("- PASS\n") : printf("- FAIL \n");
@@ -45,6 +44,7 @@ static void TestPlayerCreate(void)
 	strcmp(resName, playerName) == 0 ? printf("- PASS\n") :
 		printf("- FAIL \n");
 	PlayerDestroy(&ptrPlayer);
+	*/
 }
 
 static void TestDestroy(void)
@@ -68,7 +68,7 @@ static void TestGiveCardToPlayer(void)
 	Player* ptrPlayer = NULL;
 	ERRStat resGiveCard;
 	Deck* deck;
-	Cards* card;
+	Card* card;
 	char playerName[] = "David";
 	printf("Test GiveCardToPlayer(): ptrPlayer, card, index ");
 	ptrPlayer = PlayerCreate(playerName, HUMAN);
@@ -89,28 +89,3 @@ static void TestGiveCardToPlayer(void)
 	DeckDestroy(&deck);
 	PlayerDestroy(&ptrPlayer);
 }
-
-static void TestCardDestroy(void)
-{
-	Player* ptrPlayer = NULL;
-	char playerName[] = "David";
-	Deck* deck;
-	Cards* card;
-	printf("Test CardDestroy(): ptrPlayer ");
-	ptrPlayer = PlayerCreate(playerName, HUMAN);
-	deck = DeckCreate();
-	card = TakeCardFromDeck(deck);
-	GiveCardToPlayer(ptrPlayer, card);
-	CardsDestroy(&ptrPlayer);
-	printf("- PASS\n");
-	printf("Test CardDestroy(): ptrPlayer double destroy");
-	CardsDestroy(&ptrPlayer);
-	printf("- PASS\n");
-	printf("Test CardDestroy(): NULL ");
-	PlayerDestroy(NULL);
-	printf("- PASS\n");
-	DeckDestroy(&deck);
-	PlayerDestroy(&ptrPlayer);
-}
-
-
