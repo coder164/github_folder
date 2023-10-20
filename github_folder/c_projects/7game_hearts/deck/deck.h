@@ -33,7 +33,7 @@ description:	remove single card from the deck.
 arguments:		_deck: the deck.
 return value:	the card that have been removed.
 errors:			NULL - if _deck is invalid.*/
-Cards* TakeCardFromDeck(Deck* _deck);
+Card* TakeCardFromDeck(Deck* _deck);
 
 
 #endif /* __DECK_H__ */

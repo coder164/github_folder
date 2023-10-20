@@ -10,10 +10,10 @@ typedef enum Rank {
     TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE, NUM_OF_RANK
 } Rank;
 
-typedef struct Cards {
+typedef struct Card {
     Suits m_suit;
     Rank m_rank;
-} Cards;
+} Card;
 
 
 #endif /* __CARDS_H__ */

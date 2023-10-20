@@ -1,4 +1,4 @@
-# makefile for testdeck for Hearts project
+# makefile for the testdeck of the project
 
 TARGET = testdeck.out
 CC = gcc
@@ -19,5 +19,8 @@ vector.o: $(P_VEC)vector.c $(P_VEC)vector.h
 testdeck.o: testdeck.c deck.h $(P_VEC)vector.h $(P_CARDS)cards.h
 	$(CC) $(CFLAGS) -I $(P_VEC) -I $(P_CARDS) -c testdeck.c
 
+valgrind:
+	valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./testdeck.out
+
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(TARGET) $(OBJS) V2.log

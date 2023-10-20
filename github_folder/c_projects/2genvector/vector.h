@@ -38,7 +38,7 @@ Vector* VectorCreate(size_t _initialCapacity, size_t _blockSize);
 
 /*
 description:	deallocate the vector and all of its members.
-arguments:		_vector: the vector to be destroied
+arguments:		_vector: the vector to be destroyed
 				_elementDestroy: A function pointer to be used to destroy
 								all the elements of vector. it can also be
 								null if no such destroy is required.
