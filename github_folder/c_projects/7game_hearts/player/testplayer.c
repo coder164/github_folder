@@ -30,7 +30,6 @@ static void TestPlayerCreate(void)
 	ptrPlayer = PlayerCreate(playerName, HUMAN);
 	ptrPlayer != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	PlayerDestroy(&ptrPlayer);
-	/*
 	printf("Test PlayerCreate() 'David', BOT ");
 	ptrPlayer = PlayerCreate(playerName, BOT);
 	ptrPlayer != NULL ? printf("- PASS\n") : printf("- FAIL \n");
@@ -38,13 +37,12 @@ static void TestPlayerCreate(void)
 	printf("Test PlayerCreate() NULL, BOT ");
 	ptrPlayer = PlayerCreate(NULL, HUMAN);
 	ptrPlayer == NULL ? printf("- PASS\n") : printf("- FAIL \n");
-	printf("Test PlayerCreate correct name assumption ");
+	printf("Test PlayerCreate() correct name assumption ");
 	ptrPlayer = PlayerCreate(playerName, HUMAN);
 	GetName(ptrPlayer, resName);
 	strcmp(resName, playerName) == 0 ? printf("- PASS\n") :
 		printf("- FAIL \n");
 	PlayerDestroy(&ptrPlayer);
-	*/
 }
 
 static void TestDestroy(void)

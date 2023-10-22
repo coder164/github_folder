@@ -6,10 +6,11 @@
 
 #define SHUFFLE_FACTOR 64
 
-/********************* declare inner func *********************/
+/******************** Assistance Functions ********************/
 static Vector* CreateCards(void);
 static void Swap(Vector* _deck, int _first, int _second);
 static void DestroyCard(void* _card);
+/**************************************************************/
 
 struct Deck {
     Vector* m_cards;

@@ -11,17 +11,17 @@
 
 /***************** Assitance Inner Functions ******************/
 static int SearchCorrectIndex(Player* _player, Card* _card);
+static void DestroyCard(void* _card);
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard);
 static ERRStat IsSameSuit(Card* _card, Card* _tempCard);
 static ERRStat IsRankLower(Card* _card, Card* _tempCard);
 static ERRStat DoInsertion(Player* _player, Card* _card,
     int _index);
 
-static void DestroyCard(void* _card);
-
 /*************** Assistance Functions for Tests ***************/
 void GetName(Player* _player, char* _item);
 int GetNumOfCards(Player* _player);
+/**************************************************************/
 
 struct Player {
     char m_name[MAX_NAME_LENGTH];
@@ -158,7 +158,7 @@ static void DestroyCard(void* _card)
     free(_card);
 }
 
-/*************** assistance functions for tests ***************/
+/*************** Assistance Functions for Tests ***************/
 
 void GetName(Player* _player, char* _item)
 {
@@ -169,5 +169,3 @@ int GetNumOfCards(Player* _player)
 {
     return _player -> m_numOfCards;
 }
-
-
