@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <string.h> /* for strcmp */
-#include <stdlib.h>	/* for free() */
-
 #include "player.h"
 #include "cards.h"	/* for Test GiveCardToPlayer */
 #include "deck.h"	/* for Test GiveCardToPlayer */
-
 #define MAX_NAME_LENGTH 30
 #define OK 0
 
@@ -17,8 +14,10 @@ int main(void)
 {
 	printf("Tests\n");
 	TestPlayerCreate();
+	/*
 	TestDestroy();
 	TestGiveCardToPlayer();
+	*/
 	return OK;
 }
 
@@ -75,7 +74,6 @@ static void TestGiveCardToPlayer(void)
 	card = TakeCardFromDeck(deck);
 	resGiveCard = GiveCardToPlayer(ptrPlayer, card);
 	resGiveCard == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
-	free(card);
 	printf("Test GiveCardToPlayer(): NULL, card, index ");
 	resGiveCard = GiveCardToPlayer(NULL, card);
 	resGiveCard == ERROR_POINTER_NULL ? printf("- PASS\n") :

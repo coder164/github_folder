@@ -3,7 +3,6 @@
 
 
 #include "../cards/cards.h"
-
 #define CARDS_FACTOR 52
 
 typedef struct Deck Deck;

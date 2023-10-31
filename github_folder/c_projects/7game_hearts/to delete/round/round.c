@@ -7,15 +7,15 @@
 #include "../player/player.h"
 #include "../errstat.h"                 /* for error statuses */
 
-/***************** Assitance Inner Functions ******************/
+/* declare assistance funcs for tests */
+void DestroyPlayersFromTest(Round* _round);
+/* declare inner funcs */
 static ERRStat HandoutCards(Player** _players, Round* _round);
 ERRStat ChangeThreeCards(Round* _round, TransferDirection _direction);
-static ERRStat TakeThreeCardsFromPlayer(Player* _player, Card* _arrCards);
-static ERRStat GiveThreeCardsToPlayer(Player* _player, Card* _arrCards);
-ERRStat GiveCardsFromLeft(Round* _round, Card* _arrCards);
+static ERRStat TakeThreeCardsFromPlayer(Player* _player, Cards* _arrCards);
+static ERRStat GiveThreeCardsToPlayer(Player* _player, Cards* _arrCards);
+ERRStat GiveCardsFromLeft(Round* _round, Cards* _arrCards);
 static ERRStat CreateSingleCard(void** _card); /* for _arrCards */
-void DestroyAllPlayers(Round** _round);
-/**************************************************************/
 
 struct Round {
     Player** m_players; /* array of Players*/
@@ -68,7 +68,6 @@ void RoundDestroy(Round** _round)
         return;
     }
     DeckDestroy(&(*_round) -> m_deck);
-    DestroyAllPlayers(_round);
     free((*_round) -> m_playersPoints);
     free(*_round);
     *_round = NULL;
@@ -178,7 +177,7 @@ static ERRStat GiveThreeCardsToPlayer(Player* _player, Cards* _arrCards)
 static ERRStat HandoutCards(Player** _players, Round* _round)
 {
     int j;
-    Card* card;
+    Cards* card;
     for (j = 0; j < NUM_OF_PLAYERS; ++j)
     {
         card = TakeCardFromDeck(_round -> m_deck);
@@ -204,11 +203,15 @@ static ERRStat CreateSingleCard(void** _card)
 }
 */
 
-void DestroyAllPlayers(Round** _round)
+void DestroyPlayersFromTest(Round* _round)
 {
     int i;
-    for (i = 0; i < (*_round) -> m_numOfPlayers; ++i)
+    if (NULL == _round)
     {
-        PlayerDestroy(&((*_round) -> m_players[i]));
+        return;
+    }
+    for (i = 0; i < (_round -> m_numOfPlayers); ++i)
+    {
+        PlayerDestroy(&(_round -> m_players[i]));
     }
 }

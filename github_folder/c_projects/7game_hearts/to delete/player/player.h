@@ -3,7 +3,6 @@
 
 
 #include "../errstat.h" /* for statuses of errors*/
-
 #define NUM_OF_PLAYERS 4
 
 typedef struct Player Player;

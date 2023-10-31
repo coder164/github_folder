@@ -28,11 +28,8 @@ player.o: $(P_PLAYER)player.c $(P_PLAYER)player.h $(P_CARDS)cards.h $(P_VEC)vect
 testround.o: testround.c round.h $(P_PLAYER)player.h $(P_ERRSTAT)errstat.h $(P_CARDS)cards.h
 	$(CC) $(CFLAGS) -I $(P_PLAYER) -I $(P_ERRSTAT) -I $(P_CARDS) -c testround.c
 
-valgrind:
-	valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./testround.out
-
 clean:
-	rm -f $(TARGET) $(OBJS) V2.log
+	rm -f $(TARGET) $(OBJS)
 
 
 

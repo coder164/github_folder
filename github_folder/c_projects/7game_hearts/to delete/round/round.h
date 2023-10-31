@@ -22,7 +22,7 @@ arguments:		_card: card to move from/to player.
                 _context: context to be used.
 return value:	ERROR_SUCCESS: if all went well.
 errors:			ERROR_POINTER_NULL: if one of the cards is invalid. */
-typedef ERRStat (*HeartsThreeCards)(Card* _card, void* _context);
+typedef ERRStat (*HeartsThreeCards)(Cards* _card, void* _context);
 
 /*
 description:	pointer function for the implementation of the game rules
@@ -36,7 +36,7 @@ return value:	ERROR_SUCCESS: if all went well.
 errors:			ERROR_POINTER_NULL: - if _card is invalid
                                     - if _table is invalid
                                     - if _hand is invalid. */
-typedef ERRStat (*HeartsRules)(Card* _card, Card* _table, ERRStat _hand,
+typedef ERRStat (*HeartsRules)(Cards* _card, Cards* _table, ERRStat _hand,
     void* _context);
 
 /*
