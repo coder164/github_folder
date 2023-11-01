@@ -7,9 +7,9 @@ Date: 31-12-22.
 */
 
 typedef enum ERRStat{
-    FALSE = -1,
-    ERROR_OK = 0,
+    FALSE = 0,
     TRUE = 1,
+    ERROR_OK,
     ERROR_POINTER_NULL,
     ERROR_NUM_PLAYERS,
     ERROR_ALLOCATION_FAILED,

@@ -1,5 +1,6 @@
 #include <stdlib.h>                     /* for malloc */
 #include <string.h>                     /* for strcpy */
+#include <stdio.h>
 
 #include "player.h"
 #include "../../2genvector/vector.h"    /* for cards vector */
@@ -89,16 +90,22 @@ ERRStat GiveCardToPlayer(Player* _player, void* _card)
     return ERROR_SUCCESS;
 }
 
-void* TakeCardFromPlayer(Player* _player)
+ERRStat TakeCardFromPlayer(Player* _player, void* _card)
 {
-    void* removedCard;
-    if (NULL == _player)
+    if (NULL == _player || NULL == _card)
     {
-        return NULL;
+        return ERROR_POINTER_NULL;
     }
-    VectorRemove(_player -> m_cards, &removedCard);
-    _player -> m_numOfCards -= 1;
-    return removedCard;
+    else if (0 == _player -> m_numOfCards)
+    {
+        return ERROR_GENERAL;
+    }
+    else
+    {
+        VectorRemove(_player -> m_cards, &_card);
+        _player -> m_numOfCards -= 1;
+        return ERROR_OK;
+    }
 }
 
 /******************** Assistance Functions ********************/

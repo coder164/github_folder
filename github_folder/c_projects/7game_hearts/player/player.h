@@ -41,7 +41,7 @@ description:	take card from player.
 arguments:		_player: pointer to the player.
 return value:	the removed card from player.
 errors:			ERROR_POINTER_NULL: if _player is invalid. */
-void* TakeCardFromPlayer(Player* _player);
+ERRStat TakeCardFromPlayer(Player* _player, void* _card);
 
 
 #endif /* __PLAYER_H__ */
