@@ -157,7 +157,7 @@ static ERRStat DoInsertion(Player* _player, Card* _card,
     }
     VectorSet(_player -> m_cards, _index, _card);
     _player -> m_numOfCards += 1;
-    ERROR_SUCCESS;
+    return ERROR_SUCCESS;
 }
 
 static void DestroyCard(void* _card)

@@ -33,7 +33,8 @@ Deck* ShuffleCards(Deck* _deck);
 description:	remove single card from the deck.
 arguments:		_deck: the deck.
 return value:	the card that have been removed.
-errors:			NULL - if _deck is invalid.*/
+errors:			NULL - if _deck is invalid
+                     - if operation failed .*/
 Card* TakeCardFromDeck(Deck* _deck);
 
 

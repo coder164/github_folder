@@ -69,8 +69,14 @@ Card* TakeCardFromDeck(Deck* _deck)
     {
         return NULL;
     }
-    VectorRemove(_deck -> m_cards, &card);
-    return card;
+    if (VectorRemove(_deck -> m_cards, &card) != VECTOR_OK)
+    {
+        return NULL;
+    }
+    else
+    {
+        return card;
+    }
 }
 
 /******************** Assistance Functions ********************/

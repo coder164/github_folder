@@ -76,7 +76,6 @@ static void TestGiveCardToPlayer(void)
 	card = TakeCardFromDeck(deck);
 	resGiveCard = GiveCardToPlayer(ptrPlayer, card);
 	resGiveCard == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
-	free(card);
 	printf("Test GiveCardToPlayer(): NULL, card, index ");
 	resGiveCard = GiveCardToPlayer(NULL, card);
 	resGiveCard == ERROR_POINTER_NULL ? printf("- PASS\n") :
@@ -87,6 +86,7 @@ static void TestGiveCardToPlayer(void)
 		printf("- FAIL \n");
 	printf("Test GiveCardToPlayer(): correct num of cards 1 card in hand");
 	GetNumOfCards(ptrPlayer) == 1 ? printf("- PASS\n") : printf("- FAIL \n");
+	free(card);
 	DeckDestroy(&deck);
 	PlayerDestroy(&ptrPlayer);
 }

@@ -32,15 +32,17 @@ description:	give a single card to the specified player.
 arguments:		_player: pointer to the player.
                 _card: the card.
 return value:	ERROR_SUCCESS: if all went well.
-errors:			ERROR_POINTER_NULL: if _player or _card are
-                    invalid. */
+errors:			ERROR_POINTER_NULL: - if _player is invalid
+                                    - if _card is invalid. */
 ERRStat GiveCardToPlayer(Player* _player, void* _card);
 
 /*
 description:	take card from player.
 arguments:		_player: pointer to the player.
-return value:	the removed card from player.
-errors:			ERROR_POINTER_NULL: if _player is invalid. */
+                _card: the card to be moved to.
+return value:	ERROR_OK.
+errors:			ERROR_POINTER_NULL: - if _player is invalid
+                                    - if _card is invalid. */
 ERRStat TakeCardFromPlayer(Player* _player, void* _card);
 
 

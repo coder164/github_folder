@@ -3,8 +3,8 @@
 
 #include "deck.h"
 #include "../../2genvector/vector.h"
-#define OK 0;
 
+#define OK 0;
 
 static void TestDeckCreate(void);
 static void TestDeckDestroy(void);
@@ -13,7 +13,6 @@ static void TestTakeCardFromDeck(void);
 
 int main(void)
 {
-	printf("Tests\n");
 	TestDeckCreate();
 	TestDeckDestroy();
 	TestShuffleCards();
