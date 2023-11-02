@@ -75,18 +75,17 @@ void PlayerDestroy(Player** _player)
 
 ERRStat GiveCardToPlayer(Player* _player, void* _card)
 {
-    int _index;
+    VectorResult result;
     if (NULL == _player || NULL == _card)
     {
         return ERROR_POINTER_NULL;
     }
-    if (0 == _player -> m_numOfCards)
+    result = VectorAppend(_player -> m_cards, _card);
+    if (result != VECTOR_OK)
     {
-        DoInsertion(_player, _card, 0);
-        return ERROR_SUCCESS;
+        return ERROR_GENERAL;
     }
-    _index = SearchCorrectIndex(_player, _card);
-    DoInsertion(_player, _card, _index);
+    _player -> m_numOfCards++;
     return ERROR_SUCCESS;
 }
 
@@ -103,33 +102,13 @@ ERRStat TakeCardFromPlayer(Player* _player, void* _card)
     else
     {
         VectorRemove(_player -> m_cards, &_card);
-        _player -> m_numOfCards -= 1;
+        _player -> m_numOfCards--;
         return ERROR_OK;
     }
 }
 
 /******************** Assistance Functions ********************/
 
-static int SearchCorrectIndex(Player* _player, Card* _card)
-{
-    void* tempCard;
-    int index;
-    for (index = 0; index < (_player -> m_numOfCards); ++index)
-    {
-        VectorGet(_player -> m_cards,
-            (_player -> m_numOfCards) - 1, &tempCard);
-        if (IsSuitLower(_card, tempCard) == TRUE)
-        {
-            return index;
-        }
-        if (IsSameSuit(_card, tempCard) == TRUE &&
-            IsRankLower(_card, tempCard) == TRUE)
-        {
-            return index;
-        }
-    }
-    return index;
-}
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
 {
     return ((_card -> m_suit) < (_tempCard -> m_suit)) ? TRUE : FALSE;
@@ -143,21 +122,6 @@ static ERRStat IsSameSuit(Card* _card, Card* _tempCard)
 static ERRStat IsRankLower(Card* _card, Card* _tempCard)
 {
     return ((_card -> m_rank) < (_tempCard -> m_rank)) ? TRUE : FALSE;
-}
-
-static ERRStat DoInsertion(Player* _player, Card* _card,
-    int _index)
-{
-    int j;
-    void* tempCard;
-    for (j = (_player -> m_numOfCards); j > _index; --j)
-    {
-        VectorGet(_player -> m_cards, j - 1, &tempCard);
-        VectorSet(_player -> m_cards, j, tempCard);
-    }
-    VectorSet(_player -> m_cards, _index, _card);
-    _player -> m_numOfCards += 1;
-    return ERROR_SUCCESS;
 }
 
 static void DestroyCard(void* _card)

@@ -1,4 +1,5 @@
 #include <stdlib.h>                     /* for malloc */
+#include <stdio.h>
 
 #include "round.h"
 #include "../../2genvector/vector.h"    /* for m_deck */
@@ -9,6 +10,8 @@
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
+static ERRStat TakeoutCards(Player** _players, Round* _round);
+
 ERRStat ChangeThreeCards(Round* _round, TransferDirection _direction);
 static ERRStat TakeThreeCardsFromPlayer(Player* _player, Card* _arrCards);
 static ERRStat GiveThreeCardsToPlayer(Player* _player, Card* _arrCards);
@@ -67,9 +70,9 @@ void RoundDestroy(Round** _round)
     {
         return;
     }
+    free((*_round) -> m_playersPoints);
     DeckDestroy(&(*_round) -> m_deck);
     DestroyAllPlayers(_round);
-    free((*_round) -> m_playersPoints);
     free(*_round);
     *_round = NULL;
 }
@@ -77,7 +80,6 @@ void RoundDestroy(Round** _round)
 
 ERRStat RunRound(Round* _round, TransferDirection _direction)
 {
-    int i;
     Deck* shuffledDeck;
     if (NULL == _round)
     {
@@ -85,11 +87,15 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     }
     shuffledDeck = ShuffleCards((_round) -> m_deck);
     (_round) -> m_deck = shuffledDeck;
-    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
+    if (HandoutCards(_round -> m_players, _round) != ERROR_SUCCESS)
     {
-        HandoutCards(_round -> m_players, _round);
+        return ERROR_POINTER_NULL;
     }
     /*
+    else if (TakeoutCards(_round -> m_players, _round) != ERROR_SUCCESS)
+    {
+        return ERROR_POINTER_NULL;
+    }
     ChangeThreeCards(_round, _direction);
     */
     /* to continue here complete round */
@@ -177,19 +183,45 @@ static ERRStat GiveThreeCardsToPlayer(Player* _player, Cards* _arrCards)
 */
 static ERRStat HandoutCards(Player** _players, Round* _round)
 {
-    int j;
-    Card* card;
-    for (j = 0; j < NUM_OF_PLAYERS; ++j)
+    int i, j;
+    void* card = NULL;
+    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
     {
-        card = TakeCardFromDeck(_round -> m_deck);
-        if (NULL == card)
+        for (j = 0; j < NUM_OF_PLAYERS; ++j)
         {
-            return ERROR_POINTER_NULL;
+            card = TakeCardFromDeck(_round -> m_deck);
+            if (NULL == card)
+            {
+                return ERROR_POINTER_NULL;
+            }
+            else
+            {
+                GiveCardToPlayer(_players[j], card);
+            }
         }
-        GiveCardToPlayer(_players[j], card);
     }
     return ERROR_SUCCESS;
 }
+
+static ERRStat TakeoutCards(Player** _players, Round* _round)
+{
+    int i, j;
+    Card* card;
+    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
+    {
+        for (j = 0; j < NUM_OF_PLAYERS; ++j)
+        {
+            TakeCardFromPlayer(_players[j], card);
+            if (NULL == card)
+            {
+                return ERROR_POINTER_NULL;
+            }
+            free(card);
+        }
+    }
+    return ERROR_SUCCESS;
+}
+
 /************** Assistance Functions for Tests ****************/
 /*
 static ERRStat CreateSingleCard(void** _card)

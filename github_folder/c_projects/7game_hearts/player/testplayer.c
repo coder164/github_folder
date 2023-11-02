@@ -20,6 +20,7 @@ int main(void)
 	TestDestroy();
 	TestGiveCardToPlayer();
 	TestTakeCardFromPlayer();
+	putchar('\n');
 	return OK;
 }
 
@@ -86,7 +87,6 @@ static void TestGiveCardToPlayer(void)
 		printf("- FAIL \n");
 	printf("Test GiveCardToPlayer(): correct num of cards 1 card in hand");
 	GetNumOfCards(ptrPlayer) == 1 ? printf("- PASS\n") : printf("- FAIL \n");
-	free(card);
 	DeckDestroy(&deck);
 	PlayerDestroy(&ptrPlayer);
 }
@@ -110,19 +110,18 @@ static void TestTakeCardFromPlayer(void)
 	resTakeCard = TakeCardFromPlayer(ptrPlayer, card);
 	resTakeCard == ERROR_GENERAL ? printf("- PASS\n") :
 		printf("- FAIL \n");
-	free(card);
 	printf("Test TakeCardFromPlayer(): ptrPlayer, NULL");
 	GiveCardToPlayer(ptrPlayer, NULL);
 	resTakeCard = TakeCardFromPlayer(ptrPlayer, NULL);
 	resTakeCard == ERROR_POINTER_NULL ? printf("- PASS\n") :
 		printf("- FAIL \n");
+	free(card);
 	printf("Test TakeCardFromPlayer(): NULL, card");
 	card = TakeCardFromDeck(deck);
 	GiveCardToPlayer(ptrPlayer, card);
 	resTakeCard = TakeCardFromPlayer(NULL, card);
 	resTakeCard == ERROR_POINTER_NULL ? printf("- PASS\n") :
 		printf("- FAIL \n");
-	free(card);
 	DeckDestroy(&deck);
 	PlayerDestroy(&ptrPlayer);
 }

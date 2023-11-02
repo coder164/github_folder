@@ -5,6 +5,7 @@
 #include "errstat.h" /* for error statuses */
 
 #define NUM_OF_PLAYERS 4
+#define OK 0
 
 static void TestRoundCreate(void);
 static void TestRoundDestroy(void);
@@ -14,10 +15,8 @@ int main(void)
 {
 	TestRoundCreate();
 	TestRoundDestroy();
-	/*
 	TestRunRound();
-	*/
-	return ERROR_OK;
+	return OK;
 }
 
 static void TestRoundCreate(void)
@@ -79,12 +78,13 @@ static void TestRunRound(void)
 	}
 	ptrRound = RoundCreate(arrPlayers, NUM_OF_PLAYERS);
 	resRun = RunRound(ptrRound, LEFT);
+	resRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
 	RoundDestroy(&ptrRound);
 	/*
-	resRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
 	printf("Test RunRound(): NULL ");
 	resRun = RunRound(NULL, LEFT);
 	resRun == ERROR_POINTER_NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	RoundDestroy(&ptrRound);
 	*/
+	putchar('\n');
 }

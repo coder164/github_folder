@@ -10,7 +10,7 @@ size_t GetVecNItems(Vector* _vector);
 size_t GetVecBlockSize(Vector* _vector);
 
 /* declaring other assistant functions */
-static Vector* EcecuteCreate(size_t _initialCapacity, size_t _blockSize);
+static Vector* ExecuteCreate(size_t _initialCapacity, size_t _blockSize);
 VectorResult ReallocateVectorAdd(Vector *_vector);
 void RealocateVectorDelete(Vector *_vector);
 
@@ -29,7 +29,7 @@ Vector* VectorCreate(size_t _initialCapacity, size_t _blockSize) {
 	{
 		return NULL;
 	}
-	newVector = EcecuteCreate(_initialCapacity, _blockSize);
+	newVector = ExecuteCreate(_initialCapacity, _blockSize);
 	return newVector;
 }
 
@@ -151,7 +151,7 @@ size_t VectorForEach(const Vector* _vector,
 }
 /******************************************************************/
 
-static Vector* EcecuteCreate(size_t _initialCapacity, size_t _blockSize)
+static Vector* ExecuteCreate(size_t _initialCapacity, size_t _blockSize)
 {
 	Vector* newVector;
 	void** arrayPointers = NULL;
