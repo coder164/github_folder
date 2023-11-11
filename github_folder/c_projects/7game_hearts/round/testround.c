@@ -80,11 +80,9 @@ static void TestRunRound(void)
 	resRun = RunRound(ptrRound, LEFT);
 	resRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
 	RoundDestroy(&ptrRound);
-	/*
-	printf("Test RunRound(): NULL ");
+
+	printf("Test RunRound(): NULL, LEFT ");
 	resRun = RunRound(NULL, LEFT);
 	resRun == ERROR_POINTER_NULL ? printf("- PASS\n") : printf("- FAIL \n");
-	RoundDestroy(&ptrRound);
-	*/
 	putchar('\n');
 }

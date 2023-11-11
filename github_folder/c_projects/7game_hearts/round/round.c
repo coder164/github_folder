@@ -10,9 +10,8 @@
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
-static ERRStat TakeoutCards(Player** _players, Round* _round);
 
-ERRStat ChangeThreeCards(Round* _round, TransferDirection _direction);
+ERRStat TransferCards(Round* _round, TransferDirection _direction);
 static ERRStat TakeThreeCardsFromPlayer(Player* _player, Card* _arrCards);
 static ERRStat GiveThreeCardsToPlayer(Player* _player, Card* _arrCards);
 ERRStat GiveCardsFromLeft(Round* _round, Card* _arrCards);
@@ -87,23 +86,19 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     }
     shuffledDeck = ShuffleCards((_round) -> m_deck);
     (_round) -> m_deck = shuffledDeck;
-    if (HandoutCards(_round -> m_players, _round) != ERROR_SUCCESS)
+    if (ERROR_SUCCESS != HandoutCards(_round -> m_players, _round))
     {
         return ERROR_POINTER_NULL;
     }
     /*
-    else if (TakeoutCards(_round -> m_players, _round) != ERROR_SUCCESS)
-    {
-        return ERROR_POINTER_NULL;
-    }
-    ChangeThreeCards(_round, _direction);
+    TransferCards(_round, _direction);
     */
     /* to continue here complete round */
     return ERROR_SUCCESS;
 }
 /******************** Assistance Functions ********************/
 /* not working
-ERRStat ChangeThreeCards(Round* _round, TransferDirection _direction)
+ERRStat TransferCards(Round* _round, TransferDirection _direction)
 {
     int i, j;
     void* card;
@@ -198,25 +193,6 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
             {
                 GiveCardToPlayer(_players[j], card);
             }
-        }
-    }
-    return ERROR_SUCCESS;
-}
-
-static ERRStat TakeoutCards(Player** _players, Round* _round)
-{
-    int i, j;
-    Card* card;
-    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
-    {
-        for (j = 0; j < NUM_OF_PLAYERS; ++j)
-        {
-            TakeCardFromPlayer(_players[j], card);
-            if (NULL == card)
-            {
-                return ERROR_POINTER_NULL;
-            }
-            free(card);
         }
     }
     return ERROR_SUCCESS;
