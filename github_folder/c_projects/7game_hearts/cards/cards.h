@@ -2,17 +2,17 @@
 #define __CARDS_H__
 
 
-typedef enum Suits {
-    HEART, LEEF, DIAMOND, CLUBS, NUM_OF_SUITS
-} Suits;
+typedef enum Suit {
+    HEARTS, LEEF, DIAMOND, CLUBS, NUM_OF_SUITS
+} Suit;
 
 typedef enum Rank {
     TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE, NUM_OF_RANK
 } Rank;
 
 typedef struct Card {
-    Suits m_suit;
     Rank m_rank;
+    Suit m_suit;
 } Card;
 
 
