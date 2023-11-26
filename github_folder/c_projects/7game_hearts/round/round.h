@@ -41,10 +41,12 @@ typedef ERRStat (*HeartsRules)(Card* _card, Card* _table, ERRStat _hand,
 
 /*
 description:	create a new Round object.
-arguments:		_numOfPlayers: the number of palyers.
+arguments:		_players: pointer to pointers of players.
+                _numOfPlayers: the number of palyers.
+                _roundNum: thr number of the round
 return value:	pointer of the new Round.
 errors:			NULL - if allocation failed.*/
-Round* RoundCreate(Player** _players, int _numOfPlayers);
+Round* RoundCreate(Player** _players, int _numOfPlayers, int _roundNum);
 
 /*
 description:	destroy the round with all it's elements.

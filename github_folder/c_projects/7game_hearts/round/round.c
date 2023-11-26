@@ -8,10 +8,21 @@
 #include "../player/player.h"
 #include "../errstat.h"                 /* for error statuses */
 
+#define SIZE_ASSISTANCE_CARDS_ARRAY 13
+
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
+static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers);
+static Card* CreateAceHearts(void);
+static void DestroyAceHearts(Card** _aceHearts);
+static ERRStat TransferCards(Round* _round, TransferDirection _direction);
 
-ERRStat TransferCards(Round* _round, TransferDirection _direction);
+/*** TO TRANFER INTO UI MODULE ***/
+void AskPlayerToSelectThreeCards(Player* _player, Card* _cards);
+void PrintCard(const Card* const _card);
+const char* TranslateRankToStr(Rank _rank);
+const char* TranslateSuitToStr(Suit _suit);
+
 static ERRStat TakeThreeCardsFromPlayer(Player* _player, Card* _arrCards);
 static ERRStat GiveThreeCardsToPlayer(Player* _player, Card* _arrCards);
 ERRStat GiveCardsFromLeft(Round* _round, Card* _arrCards);
@@ -24,17 +35,18 @@ struct Round {
     Deck* m_deck;       /* pointer to the Deck */
     int* m_playersPoints;
     int m_numOfPlayers;
+    int m_roundNum;
 };
 
 /**************************************************************/
-Round* RoundCreate(Player** _players, int _numOfPlayers)
+Round* RoundCreate(Player** _players, int _numOfPlayers, int _roundNum)
 {
     Round* newRound;
     Deck* newDeck;
     int* playersPoints;
     int i;
     if (_numOfPlayers < 1 || _numOfPlayers > 4 || NULL == _players ||
-        NULL == *_players)
+        NULL == *_players || _roundNum < 0)
     {
         return NULL;
     }
@@ -60,6 +72,7 @@ Round* RoundCreate(Player** _players, int _numOfPlayers)
     newRound -> m_deck = newDeck;
     newRound -> m_playersPoints = playersPoints;
     newRound -> m_numOfPlayers = _numOfPlayers;
+    newRound -> m_roundNum = _roundNum;
     return newRound;
 }
 /**************************************************************/
@@ -90,45 +103,147 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     {
         return ERROR_POINTER_NULL;
     }
+    if (ERROR_SUCCESS != SortCards(_round -> m_players,
+        _round -> m_roundNum, _round -> m_numOfPlayers))
+        {
+            return ERROR_ALLOCATION_FAILED;
+        }
     /*
-    TransferCards(_round, _direction);
+    if (_direction != NO_TRANSFER)
+    {
+        TransferCards(_round, _direction);
+    }
     */
     /* to continue here complete round */
     return ERROR_SUCCESS;
 }
 /******************** Assistance Functions ********************/
-/* not working
-ERRStat TransferCards(Round* _round, TransferDirection _direction)
+
+static ERRStat HandoutCards(Player** _players, Round* _round)
 {
     int i, j;
-    void* card;
-    ERRStat resStatus = CreateSingleCard(&card);
-    Cards arrCards[12] = {(Cards)card};
-    if (resStatus != ERROR_SUCCESS)
+    void* card = NULL;
+    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
     {
-        return resStatus;
+        for (j = 0; j < NUM_OF_PLAYERS; ++j)
+        {
+            card = TakeCardFromDeck(_round -> m_deck);
+            if (NULL == card)
+            {
+                return ERROR_POINTER_NULL;
+            }
+            else
+            {
+                GiveCardToPlayer(_players[j], card);
+            }
+        }
     }
-    TakeThreeCardsFromPlayer(_round -> m_players[i], arrCards);
+    return ERROR_SUCCESS;
+}
+
+static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
+{
+    int cardsInHand = (CARDS_FACTOR / _numPlayers) - _roundNum;
+    int i = 0;
+    void* data[SIZE_ASSISTANCE_CARDS_ARRAY];
+    for (i = 0; i != cardsInHand; ++i)
+    {
+        TakeCardFromPlayer(_players[0], &(data[i]));
+        PrintCard((Card*)data[i]);
+        free(data[i]);
+    }
+    return ERROR_SUCCESS;
+}
+
+static ERRStat TransferCards(Round* _round, TransferDirection _direction)
+{
+    int i;
+    Card cards[SIZE_ASSISTANCE_CARDS_ARRAY];
     for (i = 0; i < (_round -> m_numOfPlayers); ++i)
     {
-        j = i * 3;
-        resStatus = TakeThreeCardsFromPlayer(_round -> m_players[i],
-            arrCards[j]);
-        if (resStatus != ERROR_SUCCESS);
-        {
-            return resStatus;
-        }
-    }
-    if (_direction == PLAYER_FROM_LEFT)
-    {
-        resStatus = GiveCardsFromLeft(_round, arrCards);
-        if (resStatus != ERROR_SUCCESS);
-        {
-            return resStatus;
-        }
+        AskPlayerToSelectThreeCards(_round -> m_players[i], cards);
     }
 }
 
+static Card* CreateAceHearts(void)
+{
+    Card* aceHearts = (Card *)malloc(sizeof(Card));
+    if (NULL == aceHearts)
+    {
+        return NULL;
+    }
+    aceHearts -> m_rank = ACE;
+    aceHearts -> m_suit = HEARTS;
+    return aceHearts;
+}
+
+static void DestroyAceHearts(Card** _aceHearts)
+{
+    if (NULL == _aceHearts || NULL == *_aceHearts)
+    {
+        return;
+    }
+    free(*_aceHearts);
+    *_aceHearts = NULL;
+}
+
+/*** TO TRANFER INTO UI MODULE ***/
+void AskPlayerToSelectThreeCards(Player* _player, Card* _cards)
+{
+    int i;
+    for (i = 0; i != 3; ++i)
+    {
+        printf("need to be completed\n");
+    }
+}
+
+void PrintCard(const Card* const _card)
+{
+    if (NULL == _card)
+    {
+        printf("ERROR: at PrintCard() _card is NULL!!!\n");
+        return;
+    }
+    putchar('\n');
+    printf("%s of %s", TranslateRankToStr(_card -> m_rank),
+        TranslateSuitToStr(_card -> m_suit));
+    putchar('\n');
+}
+
+const char* TranslateRankToStr(Rank _rank)
+{
+    switch(_rank)
+    {
+        case(TWO): return "TWO";
+        case(THREE): return "THREE";
+        case(FOUR): return "FOUR";
+        case(FIVE): return "FIVE";
+        case(SIX): return "SIX";
+        case(SEVEN): return "SEVEN";
+        case(EIGHT): return "EIGHT";
+        case(NINE): return "NINE";
+        case(TEN): return "TEN";
+        case(JACK): return "JACK";
+        case(QUEEN): return "QUEEN";
+        case(KING): return "KING";
+        case(ACE): return "ACE";
+        default: return "ERROR: rank not valid";
+    }    
+}
+
+const char* TranslateSuitToStr(Suit _suit)
+{
+    switch(_suit)
+    {
+        case(HEARTS): return "HEARTS";
+        case(LEEF): return "LEEF";
+        case(DIAMOND): return "DIAMOND";
+        case(CLUBS): return "CLUBS";
+        default: return "ERROR: suit not valid";
+    }    
+}
+
+/* not working
 static ERRStat TakeThreeCardsFromPlayer(Player* _player, Cards* _arrCards)
 {
     int j;
@@ -176,27 +291,6 @@ static ERRStat GiveThreeCardsToPlayer(Player* _player, Cards* _arrCards)
     return ERROR_SUCCESS;
 }
 */
-static ERRStat HandoutCards(Player** _players, Round* _round)
-{
-    int i, j;
-    void* card = NULL;
-    for (i = 0; i < (CARDS_FACTOR / NUM_OF_PLAYERS); ++i)
-    {
-        for (j = 0; j < NUM_OF_PLAYERS; ++j)
-        {
-            card = TakeCardFromDeck(_round -> m_deck);
-            if (NULL == card)
-            {
-                return ERROR_POINTER_NULL;
-            }
-            else
-            {
-                GiveCardToPlayer(_players[j], card);
-            }
-        }
-    }
-    return ERROR_SUCCESS;
-}
 
 /************** Assistance Functions for Tests ****************/
 /*
