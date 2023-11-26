@@ -43,7 +43,7 @@ arguments:		_player: pointer to the player.
 return value:	ERROR_OK.
 errors:			ERROR_POINTER_NULL: - if _player is invalid
                                     - if _card is invalid. */
-ERRStat TakeCardFromPlayer(Player* _player, void* _card);
+ERRStat TakeCardFromPlayer(Player* _player, void** _card);
 
 
 #endif /* __PLAYER_H__ */

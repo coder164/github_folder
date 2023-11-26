@@ -89,7 +89,7 @@ ERRStat GiveCardToPlayer(Player* _player, void* _card)
     return ERROR_SUCCESS;
 }
 
-ERRStat TakeCardFromPlayer(Player* _player, void* _card)
+ERRStat TakeCardFromPlayer(Player* _player, void** _card)
 {
     if (NULL == _player || NULL == _card)
     {
@@ -101,7 +101,7 @@ ERRStat TakeCardFromPlayer(Player* _player, void* _card)
     }
     else
     {
-        VectorRemove(_player -> m_cards, &_card);
+        VectorRemove(_player -> m_cards, _card);
         _player -> m_numOfCards--;
         return ERROR_OK;
     }

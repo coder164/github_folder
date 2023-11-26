@@ -103,11 +103,12 @@ static void TestTakeCardFromPlayer(void)
 	deck = DeckCreate();
 	card = TakeCardFromDeck(deck);
 	GiveCardToPlayer(ptrPlayer, card);
-	resTakeCard = TakeCardFromPlayer(ptrPlayer, card);
+	resTakeCard = TakeCardFromPlayer(ptrPlayer, (void*)card);
 	resTakeCard == ERROR_OK ? printf("- PASS\n") :
 		printf("- FAIL \n");
+	free(card);
 	printf("Test TakeCardFromPlayer(): when there is no cards");
-	resTakeCard = TakeCardFromPlayer(ptrPlayer, card);
+	resTakeCard = TakeCardFromPlayer(ptrPlayer, (void*)card);
 	resTakeCard == ERROR_GENERAL ? printf("- PASS\n") :
 		printf("- FAIL \n");
 	printf("Test TakeCardFromPlayer(): ptrPlayer, NULL");
@@ -115,11 +116,10 @@ static void TestTakeCardFromPlayer(void)
 	resTakeCard = TakeCardFromPlayer(ptrPlayer, NULL);
 	resTakeCard == ERROR_POINTER_NULL ? printf("- PASS\n") :
 		printf("- FAIL \n");
-	free(card);
 	printf("Test TakeCardFromPlayer(): NULL, card");
 	card = TakeCardFromDeck(deck);
 	GiveCardToPlayer(ptrPlayer, card);
-	resTakeCard = TakeCardFromPlayer(NULL, card);
+	resTakeCard = TakeCardFromPlayer(NULL, (void*)card);
 	resTakeCard == ERROR_POINTER_NULL ? printf("- PASS\n") :
 		printf("- FAIL \n");
 	DeckDestroy(&deck);
