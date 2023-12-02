@@ -13,8 +13,6 @@
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
 static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers);
-static Card* CreateAceHearts(void);
-static void DestroyAceHearts(Card** _aceHearts);
 static ERRStat TransferCards(Round* _round, TransferDirection _direction);
 
 /*** TO TRANFER INTO UI MODULE ***/
@@ -144,13 +142,32 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
 static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
 {
     int cardsInHand = (CARDS_FACTOR / _numPlayers) - _roundNum;
-    int i = 0;
-    void* data[SIZE_ASSISTANCE_CARDS_ARRAY];
+    int i, r;
+    int w = 0;
+    Suit suit;
+    void* tempCards[SIZE_ASSISTANCE_CARDS_ARRAY];
+    void* assitance[SIZE_ASSISTANCE_CARDS_ARRAY];
+    for (i = 0; i != cardsInHand; ++i)                  /* take cards to tempCards[] */
+    {
+        TakeCardFromPlayer(_players[0], &(tempCards[i]));
+        PrintCard((Card*)tempCards[i]);
+    }
+    for (suit = HEARTS; suit != NUM_OF_SUITS; ++suit)   /* sort by suit */
+    {
+        for (r = 0; r != cardsInHand; ++r)
+        {
+            if ( ( (Card*)tempCards[r]) -> m_suit == suit)
+            {
+                assitance[w] = tempCards[r];
+                ++w;
+            }
+        }
+    }
+    printf("\n\nAFTER SUITE SORT\n");
     for (i = 0; i != cardsInHand; ++i)
     {
-        TakeCardFromPlayer(_players[0], &(data[i]));
-        PrintCard((Card*)data[i]);
-        free(data[i]);
+        PrintCard((Card*)assitance[i]);
+        GiveCardToPlayer(_players[0], assitance[i]);
     }
     return ERROR_SUCCESS;
 }
@@ -163,28 +180,6 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
     {
         AskPlayerToSelectThreeCards(_round -> m_players[i], cards);
     }
-}
-
-static Card* CreateAceHearts(void)
-{
-    Card* aceHearts = (Card *)malloc(sizeof(Card));
-    if (NULL == aceHearts)
-    {
-        return NULL;
-    }
-    aceHearts -> m_rank = ACE;
-    aceHearts -> m_suit = HEARTS;
-    return aceHearts;
-}
-
-static void DestroyAceHearts(Card** _aceHearts)
-{
-    if (NULL == _aceHearts || NULL == *_aceHearts)
-    {
-        return;
-    }
-    free(*_aceHearts);
-    *_aceHearts = NULL;
 }
 
 /*** TO TRANFER INTO UI MODULE ***/
@@ -207,7 +202,6 @@ void PrintCard(const Card* const _card)
     putchar('\n');
     printf("%s of %s", TranslateRankToStr(_card -> m_rank),
         TranslateSuitToStr(_card -> m_suit));
-    putchar('\n');
 }
 
 const char* TranslateRankToStr(Rank _rank)
