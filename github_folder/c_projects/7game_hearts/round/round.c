@@ -8,12 +8,15 @@
 #include "../player/player.h"
 #include "../errstat.h"                 /* for error statuses */
 
-#define SIZE_ASSISTANCE_CARDS_ARRAY 13
+#define SIZE_ASSISTANCE_CARDS_ARRAY (13)
+#define NUM_OF_SUITS (4)
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
 static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers);
 static ERRStat TransferCards(Round* _round, TransferDirection _direction);
+
+static void SortByRank(void** _hand, int _cardsInHand);
 
 /*** TO TRANFER INTO UI MODULE ***/
 void AskPlayerToSelectThreeCards(Player* _player, Card* _cards);
@@ -142,34 +145,89 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
 static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
 {
     int cardsInHand = (CARDS_FACTOR / _numPlayers) - _roundNum;
+    int i, r,  minRankInd;
+    int w = 0;
+    Suit suit;
+    Rank minRank;
+    int suitCount[NUM_OF_SUITS] = {0};
+    void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
+    for (i = 0; i != cardsInHand; ++i)  /* take all cards from the player into 'hand' */
+    {
+        TakeCardFromPlayer(_players[0], &(hand[i]));
+        PrintCard((Card*)hand[i]);
+    }
+    SortByRank(hand, cardsInHand);
+
+    printf("\n\nAFTER SUITE SORT\n");
+    for (i = 0; i != cardsInHand; ++i)  /* give back to the player all his cards */
+    {
+        PrintCard((Card*)hand[i]);
+        GiveCardToPlayer(_players[0], hand[i]);
+    }
+
+    for (i = 0; i != cardsInHand; ++i)  /* take all cards from the player into 'hand' */
+    {
+        TakeCardFromPlayer(_players[0], &(hand[i]));
+    }
+
+    minRank = ( (Card*)hand[0]) -> m_rank;
+    printf("\n\n\n");
+    PrintCard((Card*)hand[0]);
+
+    /*
+    minRankInd = 0;
+    w = 0;
+    for (r = 1; r != cardsInHand; ++r)
+    {
+        for (i = 0; i != suitCount[HEARTS]; ++i)
+        {
+            if ( TWO == ((Card*)assitance[i]) -> m_rank)
+            {
+                minRankInd = r;
+                break;
+            }
+            else if ( ( ( (Card*)assitance[i]) -> m_rank < minRank))
+            {
+                minRank = ( (Card*)assitance[i]) -> m_rank;
+            }
+        }
+        hand[w] = assitance[minRankInd];
+    }
+
+    printf("\n\nAFTER RANK SORT\n");
+    for (i = 0; i != cardsInHand; ++i)
+    {
+        PrintCard((Card*)hand[i]);
+        GiveCardToPlayer(_players[0], tempCards[i]);
+    }
+    */
+    putchar('\n');
+    return ERROR_SUCCESS;
+}
+
+static void SortByRank(void** _hand, int _cardsInHand)
+{
     int i, r;
     int w = 0;
     Suit suit;
-    void* tempCards[SIZE_ASSISTANCE_CARDS_ARRAY];
+    int suitCount[NUM_OF_SUITS] = {0};
     void* assitance[SIZE_ASSISTANCE_CARDS_ARRAY];
-    for (i = 0; i != cardsInHand; ++i)                  /* take cards to tempCards[] */
-    {
-        TakeCardFromPlayer(_players[0], &(tempCards[i]));
-        PrintCard((Card*)tempCards[i]);
-    }
     for (suit = HEARTS; suit != NUM_OF_SUITS; ++suit)   /* sort by suit */
     {
-        for (r = 0; r != cardsInHand; ++r)
+        for (r = 0; r != _cardsInHand; ++r)
         {
-            if ( ( (Card*)tempCards[r]) -> m_suit == suit)
+            if ( ( (Card*)_hand[r]) -> m_suit == suit)
             {
-                assitance[w] = tempCards[r];
+                assitance[w] = _hand[r];
+                ++suitCount[suit];
                 ++w;
             }
         }
     }
-    printf("\n\nAFTER SUITE SORT\n");
-    for (i = 0; i != cardsInHand; ++i)
+    for (i = 0; i != _cardsInHand; ++i)
     {
-        PrintCard((Card*)assitance[i]);
-        GiveCardToPlayer(_players[0], assitance[i]);
+        _hand[i] = assitance[i];
     }
-    return ERROR_SUCCESS;
 }
 
 static ERRStat TransferCards(Round* _round, TransferDirection _direction)
