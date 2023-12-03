@@ -29,7 +29,6 @@ const char* TranslateSuitToStr(Suit _suit);
 static ERRStat TakeThreeCardsFromPlayer(Player* _player, Card* _arrCards);
 static ERRStat GiveThreeCardsToPlayer(Player* _player, Card* _arrCards);
 ERRStat GiveCardsFromLeft(Round* _round, Card* _arrCards);
-static ERRStat CreateSingleCard(void** _card); /* for _arrCards */
 void DestroyAllPlayers(Round** _round);
 /**************************************************************/
 
@@ -239,7 +238,7 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
     }
 }
 
-/*** TO TRANFER INTO UI MODULE ***/
+/*** TO TRANSFER INTO UI MODULE ***/
 void AskPlayerToSelectThreeCards(Player* _player, Card* _cards)
 {
     int i;
@@ -344,18 +343,6 @@ static ERRStat GiveThreeCardsToPlayer(Player* _player, Cards* _arrCards)
 */
 
 /************** Assistance Functions for Tests ****************/
-/*
-static ERRStat CreateSingleCard(void** _card)
-{
-    Cards newCard = (Cards*)malloc(sizeof(Cards))
-    if (NULL == newCard)
-    {
-        return ERROR_ALLOCATION_FAILED;
-    }
-    *_card = newCard;
-    return ERROR_SUCCESS;
-}
-*/
 
 void DestroyAllPlayers(Round** _round)
 {
