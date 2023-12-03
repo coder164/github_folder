@@ -149,7 +149,7 @@ static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
     int i, startHearts, endHearts, startLeef, endLeef, startDiamonds, endDiamonds, startClubs, endClubs;
     int suitCount[NUM_OF_SUITS] = {0};
     void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
-    for (i = 0; i != cardsInHand; ++i)      /* take all cards from the player into 'hand' */
+    for (i = 0; i != cardsInHand; ++i)
     {
         TakeCardFromPlayer(_players[0], &(hand[i]));
     }
@@ -166,14 +166,11 @@ static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
     SortByRank(hand, startLeef, endLeef);
     SortByRank(hand, startDiamonds, endDiamonds);
     SortByRank(hand, startClubs, endClubs);
-
-    printf("\nAFTER SORT()\n");
     for (i = 0; i != cardsInHand; ++i)
     {
         PrintCard((Card*)hand[i]);
         GiveCardToPlayer(_players[0], hand[i]);
     }
-    putchar('\n');
     return ERROR_SUCCESS;
 }
 
