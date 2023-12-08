@@ -18,10 +18,11 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction);
 
 static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount);
 static void SortByRank(void** _hand, int _start, int _end);
+static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards);
 static void CopyCardsPointers(void** _hand, void** _assistance, int _start, int _end);
+static void TakeThreeCards(Player* _player, void** _cards);
 
 /*** TO TRANFER INTO UI MODULE ***/
-void AskPlayerToSelectThreeCards(Player* _player, Card* _cards);
 void PrintCard(const Card* const _card);
 const char* TranslateRankToStr(Rank _rank);
 const char* TranslateSuitToStr(Suit _suit);
@@ -110,11 +111,11 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
         {
             return ERROR_ALLOCATION_FAILED;
         }
-    /*
     if (_direction != NO_TRANSFER)
     {
         TransferCards(_round, _direction);
     }
+    /*
     */
     /* to continue here complete round */
     return ERROR_SUCCESS;
@@ -149,10 +150,7 @@ static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
     int i, startHearts, endHearts, startLeef, endLeef, startDiamonds, endDiamonds, startClubs, endClubs;
     int suitCount[NUM_OF_SUITS] = {0};
     void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
-    for (i = 0; i != cardsInHand; ++i)
-    {
-        TakeCardFromPlayer(_players[0], &(hand[i]));
-    }
+    TakeAllCardsFromPlayer(_players[0], hand, cardsInHand);
     SortBySuit(hand, cardsInHand, suitCount);
     startHearts = 0;
     endHearts = suitCount[HEARTS];
@@ -172,6 +170,17 @@ static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
         GiveCardToPlayer(_players[0], hand[i]);
     }
     return ERROR_SUCCESS;
+}
+
+static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards)
+{
+    int i;
+    void* assistance[SIZE_ASSISTANCE_CARDS_ARRAY];
+    for (i = 0; i != _numOfCards; ++i)
+    {
+        TakeCardFromPlayer(_player, &(assistance[i]));
+    }
+    CopyCardsPointers(_hand, assistance, 0, _numOfCards);
 }
 
 static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount)
@@ -215,7 +224,6 @@ static void SortByRank(void** _hand, int _start, int _end)
     CopyCardsPointers(_hand, assistance, _start, _end);
 }
 
-
 static void CopyCardsPointers(void** _hand, void** _assistance, int _start, int _end)
 {
     int i;
@@ -228,21 +236,37 @@ static void CopyCardsPointers(void** _hand, void** _assistance, int _start, int 
 static ERRStat TransferCards(Round* _round, TransferDirection _direction)
 {
     int i;
-    Card cards[SIZE_ASSISTANCE_CARDS_ARRAY];
-    for (i = 0; i < (_round -> m_numOfPlayers); ++i)
+    void* cards[SIZE_ASSISTANCE_CARDS_ARRAY - 1];
+    putchar('\n');
+    for (i = 0; i != (_round -> m_numOfPlayers); ++i)
     {
-        AskPlayerToSelectThreeCards(_round -> m_players[i], cards);
+        printf("Player num: %d\n", i);
+        TakeThreeCards(_round -> m_players[i], cards);
     }
+    putchar('\n');
 }
 
 /*** TO TRANSFER INTO UI MODULE ***/
-void AskPlayerToSelectThreeCards(Player* _player, Card* _cards)
+static void TakeThreeCards(Player* _player, void** _cards)
 {
-    int i;
-    for (i = 0; i != 3; ++i)
+    int r, w;
+    void* threeCards[3];
+    printf("\n\nTakeThreeCards()\n");
+    r = 12;
+    w = 0;
+    while (w != 3)
     {
-        printf("need to be completed\n");
+        TakeCardFromPlayer(_player, threeCards[w]);
+        ++w;
+        --r;
     }
+    /*
+    for (r = 0; r != 3; ++r)
+    {
+        PrintCard((Card*)threeCards[r]);
+    }
+    CopyCardsPointers(threeCards, _cards, 10, 13);
+    */
 }
 
 void PrintCard(const Card* const _card)
