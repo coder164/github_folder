@@ -20,7 +20,7 @@ static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount);
 static void SortByRank(void** _hand, int _start, int _end);
 static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards);
 static void CopyCardsPointers(void** _hand, void** _assistance, int _start, int _end);
-static void TakeThreeCards(Player* _player, void** _cards);
+static void TakeThreeCards(Player* _player, void* _cards);
 
 /*** TO TRANFER INTO UI MODULE ***/
 void PrintCard(const Card* const _card);
@@ -111,11 +111,11 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
         {
             return ERROR_ALLOCATION_FAILED;
         }
+    /*
     if (_direction != NO_TRANSFER)
     {
         TransferCards(_round, _direction);
     }
-    /*
     */
     /* to continue here complete round */
     return ERROR_SUCCESS;
@@ -236,37 +236,26 @@ static void CopyCardsPointers(void** _hand, void** _assistance, int _start, int 
 static ERRStat TransferCards(Round* _round, TransferDirection _direction)
 {
     int i;
-    void* cards[SIZE_ASSISTANCE_CARDS_ARRAY - 1];
-    putchar('\n');
-    for (i = 0; i != (_round -> m_numOfPlayers); ++i)
+    Card cards[SIZE_ASSISTANCE_CARDS_ARRAY];
+    for (i = 0; i < (_round -> m_numOfPlayers); ++i)
     {
-        printf("Player num: %d\n", i);
         TakeThreeCards(_round -> m_players[i], cards);
     }
-    putchar('\n');
+
 }
 
 /*** TO TRANSFER INTO UI MODULE ***/
-static void TakeThreeCards(Player* _player, void** _cards)
+static void TakeThreeCards(Player* _player, void* _cards)
 {
-    int r, w;
-    void* threeCards[3];
+    int i;
+    void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
+    int cardsInHand = GetNumOfCards(_player);
+    TakeAllCardsFromPlayer(_player,hand, cardsInHand);
     printf("\n\nTakeThreeCards()\n");
-    r = 12;
-    w = 0;
-    while (w != 3)
+    for (i = 0; i != cardsInHand; ++i)
     {
-        TakeCardFromPlayer(_player, threeCards[w]);
-        ++w;
-        --r;
-    }
-    /*
-    for (r = 0; r != 3; ++r)
-    {
-        PrintCard((Card*)threeCards[r]);
-    }
-    CopyCardsPointers(threeCards, _cards, 10, 13);
-    */
+        PrintCard((Card*)hand[i]);
+    }   
 }
 
 void PrintCard(const Card* const _card)
