@@ -107,6 +107,15 @@ ERRStat TakeCardFromPlayer(Player* _player, void** _card)
     }
 }
 
+int GetNumOfCards(Player* _player)
+{
+    if (NULL == _player)
+    {
+        return 0;
+    }
+    return _player -> m_numOfCards;
+}
+
 /******************** Assistance Functions ********************/
 
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
@@ -134,9 +143,4 @@ static void DestroyCard(void* _card)
 void GetName(Player* _player, char* _item)
 {
     strcpy(_item, _player -> m_name);
-}
-
-int GetNumOfCards(Player* _player)
-{
-    return _player -> m_numOfCards;
 }
