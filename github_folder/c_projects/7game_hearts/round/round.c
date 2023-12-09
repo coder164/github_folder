@@ -229,7 +229,7 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
     void* cardsFromThirdPlayer[TRANSFER_NUM_OF_CARDS];
     void* cardsFromFourthPlayer[TRANSFER_NUM_OF_CARDS];
     void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
-    printf("\nTake three cards from each player\n");
+    printf("\nTake three cards from each player");
     TakeThreeCards(_round -> m_players[0], cardsFromFirstPlayer);
     TakeThreeCards(_round -> m_players[1], cardsFromSecondPlayer);
     TakeThreeCards(_round -> m_players[2], cardsFromThirdPlayer);
@@ -241,7 +241,14 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
         GiveThreeCards(_round -> m_players[3], cardsFromThirdPlayer);
         GiveThreeCards(_round -> m_players[0], cardsFromFourthPlayer);
     }
-    printf("After transfer of three cards for player 0\n");
+    else if (RIGHT == _direction)
+    {
+        GiveThreeCards(_round -> m_players[3], cardsFromFirstPlayer);
+        GiveThreeCards(_round -> m_players[2], cardsFromFourthPlayer);
+        GiveThreeCards(_round -> m_players[1], cardsFromThirdPlayer);
+        GiveThreeCards(_round -> m_players[0], cardsFromSecondPlayer);
+    }
+    printf("\nAfter transfer of three cards for player 0");
     TakeAllCardsFromPlayer(_round -> m_players[0], hand, SIZE_ASSISTANCE_CARDS_ARRAY);
     for (r = SIZE_ASSISTANCE_CARDS_ARRAY - 1; r != -1; --r)
     {

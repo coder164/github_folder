@@ -78,7 +78,7 @@ static void TestRunRound(void)
 		arrPlayers[i] = PlayerCreate(playerNames4[i], BOT);
 	}
 	ptrRound = RoundCreate(arrPlayers, NUM_OF_PLAYERS, 0);
-	resRun = RunRound(ptrRound, LEFT);
+	resRun = RunRound(ptrRound, RIGHT);
 	resRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
 	RoundDestroy(&ptrRound);
 	/*
