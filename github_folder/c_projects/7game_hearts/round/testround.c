@@ -72,7 +72,8 @@ static void TestRunRound(void)
 	ERRStat resRun;
 	int i;
 	printf("Test RunRound(): 4 players ");
-	for (i = 0; i < NUM_OF_PLAYERS; ++i)
+	arrPlayers[0] = PlayerCreate(playerNames4[0], BOT);
+	for (i = 1; i < NUM_OF_PLAYERS; ++i)
 	{
 		arrPlayers[i] = PlayerCreate(playerNames4[i], BOT);
 	}
