@@ -9,7 +9,8 @@
 typedef struct Player Player;
 typedef enum PlayerType {
     BOT,
-    HUMAN
+    HUMAN,
+    UNDEFINED
 } PlayerType;
 
 /*
@@ -44,6 +45,13 @@ return value:	ERROR_OK.
 errors:			ERROR_POINTER_NULL: - if _player is invalid
                                     - if _card is invalid. */
 ERRStat TakeCardFromPlayer(Player* _player, void** _card);
+
+/*
+description:	get the type of the player.
+arguments:		_player: pointer to the player.
+return value:	type of the player.
+errors:			UNDEFINED: - if _player is invalid. */
+PlayerType GetPlayerType(Player* _player);
 
 
 #endif /* __PLAYER_H__ */

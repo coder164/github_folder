@@ -107,13 +107,13 @@ ERRStat TakeCardFromPlayer(Player* _player, void** _card)
     }
 }
 
-int GetNumOfCards(Player* _player)
+PlayerType GetPlayerType(Player* _player)
 {
     if (NULL == _player)
     {
-        return 0;
+        return UNDEFINED;
     }
-    return _player -> m_numOfCards;
+    return _player -> m_type;
 }
 
 /******************** Assistance Functions ********************/
@@ -143,4 +143,13 @@ static void DestroyCard(void* _card)
 void GetName(Player* _player, char* _item)
 {
     strcpy(_item, _player -> m_name);
+}
+
+int GetNumOfCards(Player* _player)
+{
+    if (NULL == _player)
+    {
+        return 0;
+    }
+    return _player -> m_numOfCards;
 }
