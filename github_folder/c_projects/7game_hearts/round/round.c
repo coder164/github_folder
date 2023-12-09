@@ -14,9 +14,9 @@
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
-static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers);
 static ERRStat TransferCards(Round* _round, TransferDirection _direction);
 
+static void SortCards(Player** _players, int _roundNum, int _numPlayers);
 static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount);
 static void SortByRank(void** _hand, int _start, int _end);
 static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
@@ -78,7 +78,7 @@ Round* RoundCreate(Player** _players, int _numOfPlayers, int _roundNum)
     newRound -> m_roundNum = _roundNum;
     return newRound;
 }
-/**************************************************************/
+
 void RoundDestroy(Round** _round)
 {
     if (NULL == _round || NULL == *_round)
@@ -91,7 +91,6 @@ void RoundDestroy(Round** _round)
     free(*_round);
     *_round = NULL;
 }
-/**************************************************************/
 
 ERRStat RunRound(Round* _round, TransferDirection _direction)
 {
@@ -106,11 +105,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     {
         return ERROR_POINTER_NULL;
     }
-    if (ERROR_SUCCESS != SortCards(_round -> m_players,
-        _round -> m_roundNum, _round -> m_numOfPlayers))
-        {
-            return ERROR_ALLOCATION_FAILED;
-        }
+    SortCards(_round -> m_players, _round -> m_roundNum, _round -> m_numOfPlayers);
     if (_direction != NO_TRANSFER)
     {
         TransferCards(_round, _direction);
@@ -118,6 +113,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     /* to continue here complete round */
     return ERROR_SUCCESS;
 }
+
 /******************** Assistance Functions ********************/
 
 static ERRStat HandoutCards(Player** _players, Round* _round)
@@ -142,7 +138,7 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
     return ERROR_SUCCESS;
 }
 
-static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
+static void SortCards(Player** _players, int _roundNum, int _numPlayers)
 {
     int cardsInHand = ((CARDS_FACTOR / _numPlayers) - _roundNum);
     int i, startHearts, endHearts, startLeef, endLeef, startDiamonds, endDiamonds, startClubs, endClubs;
@@ -164,11 +160,8 @@ static ERRStat SortCards(Player** _players, int _roundNum, int _numPlayers)
     SortByRank(hand, startClubs, endClubs);
     for (i = 0; i != cardsInHand; ++i)
     {
-        PrintCard((Card*)hand[i]);
         GiveCardToPlayer(_players[0], hand[i]);
     }
-    putchar('\n');
-    return ERROR_SUCCESS;
 }
 
 static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount)
@@ -177,7 +170,7 @@ static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount)
     int w = 0;
     Suit suit;
     void* assistance[SIZE_ASSISTANCE_CARDS_ARRAY];
-    for (suit = HEARTS; suit != NUM_OF_SUITS; ++suit)   /* sort by suit */
+    for (suit = HEARTS; suit != NUM_OF_SUITS; ++suit)
     {
         for (r = 0; r != _cardsInHand; ++r)
         {
@@ -236,17 +229,24 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
     TakeThreeCards(_round -> m_players[3], cardsFromFourthPlayer);
     if (LEFT == _direction)
     {
+        GiveThreeCards(_round -> m_players[0], cardsFromFourthPlayer);
         GiveThreeCards(_round -> m_players[1], cardsFromFirstPlayer);
         GiveThreeCards(_round -> m_players[2], cardsFromSecondPlayer);
         GiveThreeCards(_round -> m_players[3], cardsFromThirdPlayer);
-        GiveThreeCards(_round -> m_players[0], cardsFromFourthPlayer);
     }
     else if (RIGHT == _direction)
     {
-        GiveThreeCards(_round -> m_players[3], cardsFromFirstPlayer);
-        GiveThreeCards(_round -> m_players[2], cardsFromFourthPlayer);
-        GiveThreeCards(_round -> m_players[1], cardsFromThirdPlayer);
         GiveThreeCards(_round -> m_players[0], cardsFromSecondPlayer);
+        GiveThreeCards(_round -> m_players[1], cardsFromThirdPlayer);
+        GiveThreeCards(_round -> m_players[2], cardsFromFourthPlayer);
+        GiveThreeCards(_round -> m_players[3], cardsFromFirstPlayer);
+    }
+    else if (OPPOSITE == _direction)
+    {
+        GiveThreeCards(_round -> m_players[0], cardsFromThirdPlayer);
+        GiveThreeCards(_round -> m_players[1], cardsFromFourthPlayer);
+        GiveThreeCards(_round -> m_players[2], cardsFromFirstPlayer);
+        GiveThreeCards(_round -> m_players[3], cardsFromSecondPlayer);
     }
     printf("\nAfter transfer of three cards for player 0");
     TakeAllCardsFromPlayer(_round -> m_players[0], hand, SIZE_ASSISTANCE_CARDS_ARRAY);
@@ -255,6 +255,7 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
         PrintCard((Card*)hand[r]);
         GiveCardToPlayer(_round -> m_players[0], hand[r]);
     }
+    putchar('\n');
 }
 
 static void TakeThreeCards(Player* _player, void** _cards)
