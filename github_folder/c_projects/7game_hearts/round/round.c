@@ -141,21 +141,21 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
 static void SortCards(Player** _players, int _roundNum, int _numPlayers)
 {
     int cardsInHand = ((CARDS_FACTOR / _numPlayers) - _roundNum);
-    int i, startHearts, endHearts, startLeef, endLeef, startDiamonds, endDiamonds, startClubs, endClubs;
+    int i, startHearts, endHearts, startSpades, endSpades, startDiamonds, endDiamonds, startClubs, endClubs;
     int suitCount[NUM_OF_SUITS] = {0};
     void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
     TakeAllCardsFromPlayer(_players[0], hand, cardsInHand);
     SortBySuit(hand, cardsInHand, suitCount);
     startHearts = 0;
     endHearts = suitCount[HEARTS];
-    startLeef = endHearts;
-    endLeef = startLeef + suitCount[LEEF];
-    startDiamonds = endLeef;
-    endDiamonds = startDiamonds + suitCount[DIAMOND];
+    startSpades = endHearts;
+    endSpades = startSpades + suitCount[SPADES];
+    startDiamonds = endSpades;
+    endDiamonds = startDiamonds + suitCount[DIAMONDS];
     startClubs = endDiamonds;
     endClubs = startClubs + suitCount[CLUBS];
     SortByRank(hand, startHearts, endHearts);
-    SortByRank(hand, startLeef, endLeef);
+    SortByRank(hand, startSpades, endSpades);
     SortByRank(hand, startDiamonds, endDiamonds);
     SortByRank(hand, startClubs, endClubs);
     for (i = 0; i != cardsInHand; ++i)
@@ -319,8 +319,8 @@ const char* TranslateSuitToStr(Suit _suit)
     switch(_suit)
     {
         case(HEARTS): return "HEARTS";
-        case(LEEF): return "LEEF";
-        case(DIAMOND): return "DIAMOND";
+        case(SPADES): return "SPADES";
+        case(DIAMONDS): return "DIAMONDS";
         case(CLUBS): return "CLUBS";
         default: return "ERROR: suit not valid";
     }    

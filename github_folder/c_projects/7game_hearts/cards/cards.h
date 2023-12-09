@@ -3,7 +3,7 @@
 
 
 typedef enum Suit {
-    HEARTS, LEEF, DIAMOND, CLUBS, NUM_OF_SUITS
+    HEARTS, SPADES, DIAMONDS, CLUBS, NUM_OF_SUITS
 } Suit;
 
 typedef enum Rank {
