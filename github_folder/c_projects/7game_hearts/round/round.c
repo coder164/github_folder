@@ -8,14 +8,15 @@
 #include "../player/player.h"
 #include "../errstat.h"                 /* for error statuses */
 
-#define SIZE_ASSISTANCE_CARDS_ARRAY (13)
+#define INITIAL_NUM_OF_CARDS (13)
 #define NUM_OF_SUITS (4)
 #define TRANSFER_NUM_OF_CARDS (3)
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
-static ERRStat TransferCards(Round* _round, TransferDirection _direction);
+static ERRStat StartRound(Round* _round, Player** _players);
 
+static void TransferCards(Round* _round, TransferDirection _direction);
 static void SortCards(Player** _players, int _roundNum, int _numPlayers);
 static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount);
 static void SortByRank(void** _hand, int _start, int _end);
@@ -110,11 +111,69 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     {
         TransferCards(_round, _direction);
     }
-    /* to continue here complete round */
+    if (ERROR_SUCCESS != StartRound(_round, _round -> m_players))
+    {
+        return ERROR_OUT_OF_MEMMORY;
+    }
+    /*
+    StartRound(Round* _round, Player** _players)
+    {
+        int counter, i, playerGetsCards, points;
+        Card** CardsOnTheTable[4];
+        Card* cardRecieved;
+        Suit leadingSuit;
+        currentPlayer = FindPLayerOwnsTwoClubs(Player** _players)
+        for (counter = 0; counter != INITIAL_NUM_OF_CARDS; ++counter)
+        {
+            for (i = 0; i != _round.m_numOfPlayers; ++i)
+            {
+                cardRecieved = Card* PlayHand(_players[currentPlayer]);
+                if (0 == i)
+                {
+                    leadingSuit = cardRecieved.m_suit;
+                }
+                Card[currentPlayer] = cardRecieved;
+                ++(currentPlayer);
+                currentPlayer %= 4;
+            }
+            points = CalculatePenalties(CardsOnTheTable);
+            cardRecieved = BiggestCard(CardsOnTheTable, leadingSuit);
+            playerGetsCards = int FindPlayer(CardsOnTheTable, cardRecieved, numOfPlayers)
+            {
+                int indexOfPlayer;
+                for (indexOfPlayer = 0; indexOfPlayer != numOfPlayers; ++i)
+                {
+                    if (CardsOnTheTable[indexOfPlayer].m_suit == cardRecieved.m_suit
+                        && CardsOnTheTable[indexOfPlayer].m_rank == cardRecieved.m_rank)
+                        {
+                            break;
+                        }
+                }
+                return indexOfPlayer;
+            }
+            _players[playerGetsCards].m_playersPoints += points;
+        }
+    }
+    */
     return ERROR_SUCCESS;
 }
 
 /******************** Assistance Functions ********************/
+
+static ERRStat StartRound(Round* _round, Player** _players)
+{
+    int numOfPlayers = _round -> m_numOfPlayers;
+    Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
+    {
+        if (NULL == cardsOnTable)
+        {
+            return ERROR_ALLOCATION_FAILED;
+        }
+    }
+
+    VectorDestroy(&cardsOnTable, NULL);
+    return ERROR_SUCCESS;
+}
 
 static ERRStat HandoutCards(Player** _players, Round* _round)
 {
@@ -143,7 +202,7 @@ static void SortCards(Player** _players, int _roundNum, int _numPlayers)
     int cardsInHand = ((CARDS_FACTOR / _numPlayers) - _roundNum);
     int i, startHearts, endHearts, startSpades, endSpades, startDiamonds, endDiamonds, startClubs, endClubs;
     int suitCount[NUM_OF_SUITS] = {0};
-    void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
+    void* hand[INITIAL_NUM_OF_CARDS];
     TakeAllCardsFromPlayer(_players[0], hand, cardsInHand);
     SortBySuit(hand, cardsInHand, suitCount);
     startHearts = 0;
@@ -169,7 +228,7 @@ static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount)
     int i, r;
     int w = 0;
     Suit suit;
-    void* assistance[SIZE_ASSISTANCE_CARDS_ARRAY];
+    void* assistance[INITIAL_NUM_OF_CARDS];
     for (suit = HEARTS; suit != NUM_OF_SUITS; ++suit)
     {
         for (r = 0; r != _cardsInHand; ++r)
@@ -187,7 +246,7 @@ static void SortBySuit(void** _hand, int _cardsInHand, int* _suitCount)
 
 static void SortByRank(void** _hand, int _start, int _end)
 {
-    void* assistance[SIZE_ASSISTANCE_CARDS_ARRAY];
+    void* assistance[INITIAL_NUM_OF_CARDS];
     int r, w, min;
     for (w = _start; w < _end; ++w)
     {
@@ -214,15 +273,14 @@ static void CopyCardsPointers(void** _to, void** _from, int _start, int _end)
     }
 }
 
-static ERRStat TransferCards(Round* _round, TransferDirection _direction)
+static void TransferCards(Round* _round, TransferDirection _direction)
 {
     int i, r;
     void* cardsFromFirstPlayer[TRANSFER_NUM_OF_CARDS];
     void* cardsFromSecondPlayer[TRANSFER_NUM_OF_CARDS];
     void* cardsFromThirdPlayer[TRANSFER_NUM_OF_CARDS];
     void* cardsFromFourthPlayer[TRANSFER_NUM_OF_CARDS];
-    void* hand[SIZE_ASSISTANCE_CARDS_ARRAY];
-    printf("\nTake three cards from each player");
+    void* hand[INITIAL_NUM_OF_CARDS];
     TakeThreeCards(_round -> m_players[0], cardsFromFirstPlayer);
     TakeThreeCards(_round -> m_players[1], cardsFromSecondPlayer);
     TakeThreeCards(_round -> m_players[2], cardsFromThirdPlayer);
@@ -248,27 +306,17 @@ static ERRStat TransferCards(Round* _round, TransferDirection _direction)
         GiveThreeCards(_round -> m_players[2], cardsFromFirstPlayer);
         GiveThreeCards(_round -> m_players[3], cardsFromSecondPlayer);
     }
-    printf("\nAfter transfer of three cards for player 0");
-    TakeAllCardsFromPlayer(_round -> m_players[0], hand, SIZE_ASSISTANCE_CARDS_ARRAY);
-    for (r = SIZE_ASSISTANCE_CARDS_ARRAY - 1; r != -1; --r)
-    {
-        PrintCard((Card*)hand[r]);
-        GiveCardToPlayer(_round -> m_players[0], hand[r]);
-    }
-    putchar('\n');
 }
 
 static void TakeThreeCards(Player* _player, void** _cards)
 {
     int r, w;
     void* threeCards[TRANSFER_NUM_OF_CARDS];
-    PlayerType type = GetPlayerType(_player);
+    PlayerType type = GetPlayerType(_player);   /* if type is human then to add the UI interface */
     for (w = 0; w != TRANSFER_NUM_OF_CARDS; ++w)
     {
         TakeCardFromPlayer(_player, &(threeCards[w]));
-        PrintCard((Card*)threeCards[w]);
     }
-    putchar('\n');
     CopyCardsPointers(_cards, threeCards, 0, TRANSFER_NUM_OF_CARDS);
 }
 
@@ -330,7 +378,7 @@ const char* TranslateSuitToStr(Suit _suit)
 static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards)
 {
     int i;
-    void* assistance[SIZE_ASSISTANCE_CARDS_ARRAY];
+    void* assistance[INITIAL_NUM_OF_CARDS];
     for (i = 0; i != _numOfCards; ++i)
     {
         TakeCardFromPlayer(_player, &(assistance[i]));
