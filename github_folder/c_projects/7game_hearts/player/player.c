@@ -19,6 +19,8 @@ static ERRStat IsRankLower(Card* _card, Card* _tempCard);
 static ERRStat DoInsertion(Player* _player, Card* _card,
     int _index);
 
+int IsSameCard(void* _card, size_t _index, void* _tempCard);
+
 /*************** Assistance Functions for Tests ***************/
 void GetName(Player* _player, char* _item);
 int GetNumOfCards(Player* _player);
@@ -116,6 +118,22 @@ PlayerType GetPlayerType(Player* _player)
     return _player -> m_type;
 }
 
+ERRStat IsHavingTwoOfClubs(const Player* const _player)
+{
+    size_t indexFound = 0;
+    Card twoOfClubs = {TWO, CLUBS};
+    void* ptrTwoOfClubs = &twoOfClubs;
+    indexFound = VectorForEach(_player -> m_cards, IsSameCard, ptrTwoOfClubs);
+    if (indexFound < _player -> m_numOfCards)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
 /******************** Assistance Functions ********************/
 
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
@@ -136,6 +154,20 @@ static ERRStat IsRankLower(Card* _card, Card* _tempCard)
 static void DestroyCard(void* _card)
 {
     free(_card);
+}
+
+int IsSameCard(void* _card, size_t _index, void* _tempCard)
+{
+    if ( ( (*(Card*)_card).m_suit == (*(Card*)_tempCard).m_suit)
+        &&
+        ( (*(Card*)_card).m_rank == (*(Card*)_tempCard).m_rank) )
+        {
+            return TRUE;
+        }
+    else
+    {
+        return FALSE;
+    }
 }
 
 /*************** Assistance Functions for Tests ***************/

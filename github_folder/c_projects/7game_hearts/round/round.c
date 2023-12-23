@@ -24,6 +24,8 @@ static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
 static void TakeThreeCards(Player* _player, void** _cards);
 static void GiveThreeCards(Player* _player, void** _cards);
 
+static int FindTwoClubs(Player** _players, int _numOfPlayers);
+
 
 /*** TO TRANFER INTO UI MODULE ***/
 void PrintCard(const Card* const _card);
@@ -162,6 +164,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
 
 static ERRStat StartRound(Round* _round, Player** _players)
 {
+    int startingPlayer = 0;
     int numOfPlayers = _round -> m_numOfPlayers;
     Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
     {
@@ -170,9 +173,32 @@ static ERRStat StartRound(Round* _round, Player** _players)
             return ERROR_ALLOCATION_FAILED;
         }
     }
-
+    startingPlayer = FindTwoClubs(_players, numOfPlayers);
     VectorDestroy(&cardsOnTable, NULL);
     return ERROR_SUCCESS;
+}
+
+static int FindTwoClubs(Player** _players, int _numOfPlayers)
+{
+    int i, j;
+    void* hand[13];
+    for (i = 0; i != _numOfPlayers; ++i)
+    {
+        if (IsHavingTwoOfClubs(_players[i]))
+        {
+            printf("\nPlayer %d has Two of Clubs\n", i);
+            TakeAllCardsFromPlayer(_players[i], hand, 13);
+            for (j = 0; j != 13; ++j)
+            {
+                PrintCard((Card*) hand[j]);
+                GiveCardToPlayer(_players[i], hand[j]);
+            }
+            putchar('\n');
+            return i;
+        }
+    }
+    
+    return _numOfPlayers;
 }
 
 static ERRStat HandoutCards(Player** _players, Round* _round)
@@ -374,7 +400,6 @@ const char* TranslateSuitToStr(Suit _suit)
     }    
 }
 
-/* may be usefull for strategy for bot players */
 static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards)
 {
     int i;

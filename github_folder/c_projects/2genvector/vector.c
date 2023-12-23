@@ -145,7 +145,10 @@ size_t VectorForEach(const Vector* _vector,
 	size = _vector -> m_nItems;
 	for (i = 0; i < size; ++i)
 	{
-		_action(_vector -> m_items[i], i, _context);
+		if (_action(_vector -> m_items[i], i, _context))
+		{
+			break;
+		}
 	}
 	return i;
 }

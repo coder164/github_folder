@@ -53,5 +53,7 @@ return value:	type of the player.
 errors:			UNDEFINED: - if _player is invalid. */
 PlayerType GetPlayerType(Player* _player);
 
+ERRStat IsHavingTwoOfClubs(const Player* const _player);
+
 
 #endif /* __PLAYER_H__ */
