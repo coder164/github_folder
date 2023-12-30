@@ -24,6 +24,8 @@ static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
 static void TakeThreeCards(Player* _player, void** _cards);
 static void GiveThreeCards(Player* _player, void** _cards);
 
+static Card* SelectTwoOfClubs(Player* _player);
+
 static int FindTwoClubs(Player** _players, int _numOfPlayers);
 
 
@@ -164,6 +166,8 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
 
 static ERRStat StartRound(Round* _round, Player** _players)
 {
+    Suit leadingSuit = CLUBS;
+    Card* selectedCard;
     int startingPlayer = 0;
     int numOfPlayers = _round -> m_numOfPlayers;
     Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
@@ -174,6 +178,7 @@ static ERRStat StartRound(Round* _round, Player** _players)
         }
     }
     startingPlayer = FindTwoClubs(_players, numOfPlayers);
+    /*selectedCard = SelectTwoOfClubs(_players[startingPlayer]);*/
     VectorDestroy(&cardsOnTable, NULL);
     return ERROR_SUCCESS;
 }
@@ -186,6 +191,7 @@ static int FindTwoClubs(Player** _players, int _numOfPlayers)
     {
         if (IsHavingTwoOfClubs(_players[i]))
         {
+            /*
             printf("\nPlayer %d has Two of Clubs\n", i);
             TakeAllCardsFromPlayer(_players[i], hand, 13);
             for (j = 0; j != 13; ++j)
@@ -194,11 +200,19 @@ static int FindTwoClubs(Player** _players, int _numOfPlayers)
                 GiveCardToPlayer(_players[i], hand[j]);
             }
             putchar('\n');
+            */
             return i;
         }
     }
     
     return _numOfPlayers;
+}
+
+static Card* SelectTwoOfClubs(Player* _player)
+{
+    int indexOfTwoClubs = FindIndexOfTwoOfClubs(_player);
+ 
+    /* TakeCardFromPlayer(_player, to continue here ) */
 }
 
 static ERRStat HandoutCards(Player** _players, Round* _round)

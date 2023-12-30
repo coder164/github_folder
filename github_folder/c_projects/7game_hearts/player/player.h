@@ -62,5 +62,6 @@ errors:         ERROR_POINTER_NULL: if _player is invalid.
 */
 ERRStat IsHavingTwoOfClubs(const Player* const _player);
 
+int FindIndexOfTwoOfClubs(Player* _player);
 
 #endif /* __PLAYER_H__ */

@@ -122,12 +122,11 @@ ERRStat IsHavingTwoOfClubs(const Player* const _player)
 {
     size_t indexFound = 0;
     Card twoOfClubs = {TWO, CLUBS};
-    void* ptrTwoOfClubs = &twoOfClubs;
     if (NULL == _player)
     {
         return ERROR_POINTER_NULL;
     }
-    indexFound = VectorForEach(_player -> m_cards, IsSameCard, ptrTwoOfClubs);
+    indexFound = VectorForEach(_player -> m_cards, IsSameCard, &twoOfClubs);
     if (indexFound < _player -> m_numOfCards)
     {
         return TRUE;
@@ -136,6 +135,18 @@ ERRStat IsHavingTwoOfClubs(const Player* const _player)
     {
         return FALSE;
     }
+}
+
+int FindIndexOfTwoOfClubs(Player* _player)
+{
+    int indexTwoClubs;
+    Card TwoOfClubs = {TWO, CLUBS};
+    if (NULL == _player)
+    {
+        return ERROR_POINTER_NULL;
+    }
+    indexTwoClubs = VectorForEach(_player -> m_cards, IsSameCard, &indexTwoClubs);
+    return indexTwoClubs;
 }
 
 /******************** Assistance Functions ********************/
