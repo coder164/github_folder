@@ -123,6 +123,10 @@ ERRStat IsHavingTwoOfClubs(const Player* const _player)
     size_t indexFound = 0;
     Card twoOfClubs = {TWO, CLUBS};
     void* ptrTwoOfClubs = &twoOfClubs;
+    if (NULL == _player)
+    {
+        return ERROR_POINTER_NULL;
+    }
     indexFound = VectorForEach(_player -> m_cards, IsSameCard, ptrTwoOfClubs);
     if (indexFound < _player -> m_numOfCards)
     {

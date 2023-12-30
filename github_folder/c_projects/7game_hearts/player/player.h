@@ -50,9 +50,16 @@ ERRStat TakeCardFromPlayer(Player* _player, void** _card);
 description:	get the type of the player.
 arguments:		_player: pointer to the player.
 return value:	type of the player.
-errors:			UNDEFINED: - if _player is invalid. */
+errors:			UNDEFINED: if _player is invalid. */
 PlayerType GetPlayerType(Player* _player);
 
+/*
+description:    check if the player has the card two of clubs.
+arguments:      _player: pointer to the player.
+return value:   TRUE: if he has the card.
+                False: if he doesn't has it.
+errors:         ERROR_POINTER_NULL: if _player is invalid.
+*/
 ERRStat IsHavingTwoOfClubs(const Player* const _player);
 
 
