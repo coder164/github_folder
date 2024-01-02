@@ -23,6 +23,7 @@ static void SortByRank(void** _hand, int _start, int _end);
 static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
 static void TakeThreeCards(Player* _player, void** _cards);
 static void GiveThreeCards(Player* _player, void** _cards);
+static void DestroyCard(void* _card);
 
 static Card* SelectTwoOfClubs(Player* _player);
 
@@ -178,8 +179,12 @@ static ERRStat StartRound(Round* _round, Player** _players)
         }
     }
     startingPlayer = FindTwoClubs(_players, numOfPlayers);
-    /*selectedCard = SelectTwoOfClubs(_players[startingPlayer]);*/
-    VectorDestroy(&cardsOnTable, NULL);
+    selectedCard = SelectTwoOfClubs(_players[startingPlayer]);
+
+    /* PrintCard(selectedCard); */
+    VectorAppend(cardsOnTable, selectedCard);
+
+    VectorDestroy(&cardsOnTable, DestroyCard);
     return ERROR_SUCCESS;
 }
 
@@ -210,9 +215,29 @@ static int FindTwoClubs(Player** _players, int _numOfPlayers)
 
 static Card* SelectTwoOfClubs(Player* _player)
 {
-    int indexOfTwoClubs = FindIndexOfTwoOfClubs(_player);
- 
-    /* TakeCardFromPlayer(_player, to continue here ) */
+    int i, indexOfTwoClubs, readAssistance, writeHand, end;
+    void* assistance[INITIAL_NUM_OF_CARDS];
+    PlayerType type = GetPlayerType(_player);
+    if (type == BOT)
+    {
+        indexOfTwoClubs = FindIndexOfTwoOfClubs(_player);
+        for (i = INITIAL_NUM_OF_CARDS - 1; i >= indexOfTwoClubs; --i)
+        {
+            TakeCardFromPlayer(_player, &(assistance[i]));
+        }
+        readAssistance = INITIAL_NUM_OF_CARDS - 1;
+        end = INITIAL_NUM_OF_CARDS - 1;
+        for (writeHand = indexOfTwoClubs; writeHand != end; ++writeHand)
+        {
+            GiveCardToPlayer(_player, assistance[readAssistance]);
+            --readAssistance;
+        }
+        return (Card*)assistance[indexOfTwoClubs];
+    }
+    else if (type == HUMAN)
+    {
+        printf("\n\n\n ERROR: HUMAN IS NOT DEALT WITH\n");
+    }
 }
 
 static ERRStat HandoutCards(Player** _players, Round* _round)
@@ -423,6 +448,11 @@ static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCard
         TakeCardFromPlayer(_player, &(assistance[i]));
     }
     CopyCardsPointers(_hand, assistance, 0, _numOfCards);
+}
+
+static void DestroyCard(void* _card)
+{
+    free( _card);
 }
 
 /************** Assistance Functions for Tests ****************/

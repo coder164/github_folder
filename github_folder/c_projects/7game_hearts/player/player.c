@@ -140,12 +140,12 @@ ERRStat IsHavingTwoOfClubs(const Player* const _player)
 int FindIndexOfTwoOfClubs(Player* _player)
 {
     int indexTwoClubs;
-    Card TwoOfClubs = {TWO, CLUBS};
+    Card twoOfClubs = {TWO, CLUBS};
     if (NULL == _player)
     {
         return ERROR_POINTER_NULL;
     }
-    indexTwoClubs = VectorForEach(_player -> m_cards, IsSameCard, &indexTwoClubs);
+    indexTwoClubs = VectorForEach(_player -> m_cards, IsSameCard, &twoOfClubs);
     return indexTwoClubs;
 }
 
