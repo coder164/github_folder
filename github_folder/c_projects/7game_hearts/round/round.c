@@ -26,6 +26,7 @@ static void GiveThreeCards(Player* _player, void** _cards);
 static void DestroyCard(void* _card);
 
 static Card* SelectTwoOfClubs(Player* _player);
+static Card* SelectCard(Player* _player, Suit _leadingSuit);
 
 static int FindTwoClubs(Player** _players, int _numOfPlayers);
 
@@ -169,6 +170,7 @@ static ERRStat StartRound(Round* _round, Player** _players)
 {
     Suit leadingSuit = CLUBS;
     Card* selectedCard;
+    int i, currentPlayer, remainPlayers;
     int startingPlayer = 0;
     int numOfPlayers = _round -> m_numOfPlayers;
     Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
@@ -180,36 +182,70 @@ static ERRStat StartRound(Round* _round, Player** _players)
     }
     startingPlayer = FindTwoClubs(_players, numOfPlayers);
     selectedCard = SelectTwoOfClubs(_players[startingPlayer]);
-
-    /* PrintCard(selectedCard); */
     VectorAppend(cardsOnTable, selectedCard);
+    remainPlayers = numOfPlayers - 1;
+    currentPlayer = startingPlayer + 1;
+    for (i = 0; i != remainPlayers; ++i)
+    {
+        selectedCard = SelectCard(_players[currentPlayer %4], leadingSuit);
+        /*
+        PrintCard(selectedCard);
+        putcar('\n');
+        */
+        VectorAppend(cardsOnTable, selectedCard);
+        ++currentPlayer;
+    }
 
     VectorDestroy(&cardsOnTable, DestroyCard);
     return ERROR_SUCCESS;
 }
 
+static Card* SelectCard(Player* _player, Suit _leadingSuit)
+{
+    int i, numOfCards,  indexOfHighestRank;
+    Rank highest;
+    void* hand[INITIAL_NUM_OF_CARDS];
+    if (BOT == GetPlayerType(_player))
+    {
+        numOfCards = GetNumOfCards(_player);
+        TakeAllCardsFromPlayer(_player, hand, numOfCards);
+        highest = ((Card*)hand[0]) -> m_rank;
+        indexOfHighestRank = 0;
+        for (i = 1; i != numOfCards; ++i)
+        {
+            if ( ((Card*)hand[i]) -> m_rank > highest && ((Card*)hand[i]) -> m_suit == _leadingSuit)
+            {
+                highest = ((Card*)hand[i]) -> m_rank;
+                indexOfHighestRank = i;
+            }
+        }
+        for (i = numOfCards - 1; i > indexOfHighestRank; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        for (i = indexOfHighestRank - 1; i != -1 ; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        return (Card*)hand[indexOfHighestRank];
+    }
+    else if (HUMAN == GetPlayerType(_player))
+    {
+        printf("\n\n\n ERROR: HUMAN IS NOT DEALT WITH\n");
+    }
+}
+
 static int FindTwoClubs(Player** _players, int _numOfPlayers)
 {
     int i, j;
-    void* hand[13];
+    void* hand[INITIAL_NUM_OF_CARDS];
     for (i = 0; i != _numOfPlayers; ++i)
     {
         if (IsHavingTwoOfClubs(_players[i]))
         {
-            /*
-            printf("\nPlayer %d has Two of Clubs\n", i);
-            TakeAllCardsFromPlayer(_players[i], hand, 13);
-            for (j = 0; j != 13; ++j)
-            {
-                PrintCard((Card*) hand[j]);
-                GiveCardToPlayer(_players[i], hand[j]);
-            }
-            putchar('\n');
-            */
             return i;
         }
     }
-    
     return _numOfPlayers;
 }
 
@@ -265,26 +301,33 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
 static void SortCards(Player** _players, int _roundNum, int _numPlayers)
 {
     int cardsInHand = ((CARDS_FACTOR / _numPlayers) - _roundNum);
-    int i, startHearts, endHearts, startSpades, endSpades, startDiamonds, endDiamonds, startClubs, endClubs;
+    int i, startHearts, endHearts, startSpades, endSpades, startDiamonds, endDiamonds, startClubs, endClubs, current;
     int suitCount[NUM_OF_SUITS] = {0};
     void* hand[INITIAL_NUM_OF_CARDS];
-    TakeAllCardsFromPlayer(_players[0], hand, cardsInHand);
-    SortBySuit(hand, cardsInHand, suitCount);
-    startHearts = 0;
-    endHearts = suitCount[HEARTS];
-    startSpades = endHearts;
-    endSpades = startSpades + suitCount[SPADES];
-    startDiamonds = endSpades;
-    endDiamonds = startDiamonds + suitCount[DIAMONDS];
-    startClubs = endDiamonds;
-    endClubs = startClubs + suitCount[CLUBS];
-    SortByRank(hand, startHearts, endHearts);
-    SortByRank(hand, startSpades, endSpades);
-    SortByRank(hand, startDiamonds, endDiamonds);
-    SortByRank(hand, startClubs, endClubs);
-    for (i = 0; i != cardsInHand; ++i)
+    for (current = 0; current != _numPlayers; ++current)
     {
-        GiveCardToPlayer(_players[0], hand[i]);
+        TakeAllCardsFromPlayer(_players[current], hand, cardsInHand);
+        SortBySuit(hand, cardsInHand, suitCount);
+        startHearts = 0;
+        endHearts = suitCount[HEARTS];
+        startSpades = endHearts;
+        endSpades = startSpades + suitCount[SPADES];
+        startDiamonds = endSpades;
+        endDiamonds = startDiamonds + suitCount[DIAMONDS];
+        startClubs = endDiamonds;
+        endClubs = startClubs + suitCount[CLUBS];
+        SortByRank(hand, startHearts, endHearts);
+        SortByRank(hand, startSpades, endSpades);
+        SortByRank(hand, startDiamonds, endDiamonds);
+        SortByRank(hand, startClubs, endClubs);
+        for (i = 0; i != cardsInHand; ++i)
+        {
+            GiveCardToPlayer(_players[current], hand[i]);
+        }
+        for (i = 0; i != NUM_OF_SUITS; ++i)
+        {
+            suitCount[i] = 0;
+        }
     }
 }
 
@@ -442,12 +485,10 @@ const char* TranslateSuitToStr(Suit _suit)
 static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards)
 {
     int i;
-    void* assistance[INITIAL_NUM_OF_CARDS];
     for (i = 0; i != _numOfCards; ++i)
     {
-        TakeCardFromPlayer(_player, &(assistance[i]));
+        TakeCardFromPlayer(_player, &(_hand[i]));
     }
-    CopyCardsPointers(_hand, assistance, 0, _numOfCards);
 }
 
 static void DestroyCard(void* _card)

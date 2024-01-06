@@ -185,13 +185,6 @@ int IsSameCard(void* _card, size_t _index, void* _tempCard)
     }
 }
 
-/*************** Assistance Functions for Tests ***************/
-
-void GetName(Player* _player, char* _item)
-{
-    strcpy(_item, _player -> m_name);
-}
-
 int GetNumOfCards(Player* _player)
 {
     if (NULL == _player)
@@ -199,4 +192,11 @@ int GetNumOfCards(Player* _player)
         return 0;
     }
     return _player -> m_numOfCards;
+}
+
+/*************** Assistance Functions for Tests ***************/
+
+void GetName(Player* _player, char* _item)
+{
+    strcpy(_item, _player -> m_name);
 }

@@ -64,4 +64,6 @@ ERRStat IsHavingTwoOfClubs(const Player* const _player);
 
 int FindIndexOfTwoOfClubs(Player* _player);
 
+int GetNumOfCards(Player* _player);
+
 #endif /* __PLAYER_H__ */
