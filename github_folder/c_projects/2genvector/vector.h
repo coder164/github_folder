@@ -74,7 +74,7 @@ description:	get the value of element inside the vector by index and save it
 				in '_pValue'
 arguments:		_vector: Vector
 				_index: position inside the vector
-				_pValue: pointer to pointer of variable for the
+				_pValue: pointer to pointer of the variable to store the
 						 saved data
 return value:	VECTOR_OK
 errors:			VECTOR_UNITIALIZED_ERROR - invalid vector address

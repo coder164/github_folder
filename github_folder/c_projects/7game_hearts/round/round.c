@@ -29,6 +29,7 @@ static Card* SelectTwoOfClubs(Player* _player);
 static Card* SelectCard(Player* _player, Suit _leadingSuit);
 
 static int FindTwoClubs(Player** _players, int _numOfPlayers);
+static int WhoTakesTheCards(const Vector* const _cardsOnTable);
 
 
 /*** TO TRANFER INTO UI MODULE ***/
@@ -170,7 +171,8 @@ static ERRStat StartRound(Round* _round, Player** _players)
 {
     Suit leadingSuit = CLUBS;
     Card* selectedCard;
-    int i, currentPlayer, remainPlayers;
+    void* tempCard;
+    int i, currentPlayer, remainingPlayers;
     int startingPlayer = 0;
     int numOfPlayers = _round -> m_numOfPlayers;
     Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
@@ -183,21 +185,49 @@ static ERRStat StartRound(Round* _round, Player** _players)
     startingPlayer = FindTwoClubs(_players, numOfPlayers);
     selectedCard = SelectTwoOfClubs(_players[startingPlayer]);
     VectorAppend(cardsOnTable, selectedCard);
-    remainPlayers = numOfPlayers - 1;
+    remainingPlayers = numOfPlayers - 1;
     currentPlayer = startingPlayer + 1;
-    for (i = 0; i != remainPlayers; ++i)
+    for (i = 0; i != remainingPlayers; ++i)
     {
         selectedCard = SelectCard(_players[currentPlayer %4], leadingSuit);
-        /*
-        PrintCard(selectedCard);
-        putcar('\n');
-        */
         VectorAppend(cardsOnTable, selectedCard);
         ++currentPlayer;
     }
 
+    for (i = 0; i != 4; ++i)
+    {
+        VectorGet(cardsOnTable, i, &tempCard);
+        PrintCard((Card*)tempCard);
+    }
+    putchar('\n');
+    startingPlayer = WhoTakesTheCards(cardsOnTable);
+    printf("\nindex = %d\n", startingPlayer);
+
     VectorDestroy(&cardsOnTable, DestroyCard);
     return ERROR_SUCCESS;
+}
+
+static int WhoTakesTheCards(const Vector* const _cardsOnTable)
+{
+    void* data;
+    Suit leadingSuit;
+    Rank highestRank;
+    int whoTakes, i;
+    whoTakes = 0;
+    VectorGet(_cardsOnTable, 0, &data);
+    leadingSuit = ((Card*)data) -> m_suit;
+    highestRank = ((Card*)data) -> m_rank;
+    for (i = 1; i != 4; ++i)
+    {
+        VectorGet(_cardsOnTable, i, &data);
+        if ( (*(Card*)data).m_suit == leadingSuit
+            && (*(Card*)data).m_rank > highestRank)
+            {
+                highestRank = (*(Card*)data).m_rank;
+                whoTakes = i;
+            }
+    }
+    return whoTakes;
 }
 
 static Card* SelectCard(Player* _player, Suit _leadingSuit)
