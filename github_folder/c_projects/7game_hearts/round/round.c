@@ -11,6 +11,7 @@
 #define INITIAL_NUM_OF_CARDS (13)
 #define NUM_OF_SUITS (4)
 #define TRANSFER_NUM_OF_CARDS (3)
+#define POINTS_QUEEN_SPADES (13)
 
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
@@ -24,6 +25,7 @@ static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
 static void TakeThreeCards(Player* _player, void** _cards);
 static void GiveThreeCards(Player* _player, void** _cards);
 static void DestroyCard(void* _card);
+static void AddPoints(Round* _round, Vector* _cardsOnTable ,int _indexOfPlayer);
 
 static Card* SelectTwoOfClubs(Player* _player);
 static Card* SelectCard(Player* _player, Suit _leadingSuit);
@@ -172,7 +174,7 @@ static ERRStat StartRound(Round* _round, Player** _players)
     Suit leadingSuit = CLUBS;
     Card* selectedCard;
     void* tempCard;
-    int i, currentPlayer, remainingPlayers;
+    int i, currentPlayer, remainingPlayers, playerTakesCards;
     int startingPlayer = 0;
     int numOfPlayers = _round -> m_numOfPlayers;
     Vector* cardsOnTable = VectorCreate(numOfPlayers, 0);
@@ -189,23 +191,49 @@ static ERRStat StartRound(Round* _round, Player** _players)
     currentPlayer = startingPlayer + 1;
     for (i = 0; i != remainingPlayers; ++i)
     {
-        selectedCard = SelectCard(_players[currentPlayer %4], leadingSuit);
+        selectedCard = SelectCard(_players[currentPlayer %numOfPlayers], leadingSuit);
         VectorAppend(cardsOnTable, selectedCard);
         ++currentPlayer;
     }
 
-    for (i = 0; i != 4; ++i)
+    for (i = 0; i != numOfPlayers; ++i)
     {
         VectorGet(cardsOnTable, i, &tempCard);
         PrintCard((Card*)tempCard);
     }
     putchar('\n');
-    startingPlayer = WhoTakesTheCards(cardsOnTable);
-    printf("\nindex = %d\n", startingPlayer);
+
+    playerTakesCards = WhoTakesTheCards(cardsOnTable);
+    AddPoints(_round, cardsOnTable ,playerTakesCards);
+    printf("points = %d\n", _round -> m_playersPoints[playerTakesCards]);
 
     VectorDestroy(&cardsOnTable, DestroyCard);
     return ERROR_SUCCESS;
 }
+
+
+static void AddPoints(Round* _round, Vector* _cardsOnTable ,int _indexOfPlayer)
+{
+    int i, accumulated;
+    void* currentData;
+    Card currentCard;
+    accumulated = 0;
+    for (i = 0; i != VectorSize(_cardsOnTable); ++i)
+    {
+        VectorGet(_cardsOnTable, i, &currentData);
+        currentCard = *(Card*)currentData;
+        if (QUEEN == currentCard.m_rank && SPADES == currentCard.m_suit)
+        {
+            accumulated += POINTS_QUEEN_SPADES;
+        }
+        else if (HEARTS == currentCard.m_suit)
+        {
+            ++accumulated;
+        }
+    }
+    _round -> m_playersPoints[_indexOfPlayer] += accumulated;
+}
+
 
 static int WhoTakesTheCards(const Vector* const _cardsOnTable)
 {
@@ -217,7 +245,7 @@ static int WhoTakesTheCards(const Vector* const _cardsOnTable)
     VectorGet(_cardsOnTable, 0, &data);
     leadingSuit = ((Card*)data) -> m_suit;
     highestRank = ((Card*)data) -> m_rank;
-    for (i = 1; i != 4; ++i)
+    for (i = 1; i != VectorSize(_cardsOnTable); ++i)
     {
         VectorGet(_cardsOnTable, i, &data);
         if ( (*(Card*)data).m_suit == leadingSuit
