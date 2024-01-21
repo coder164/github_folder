@@ -149,6 +149,15 @@ int FindIndexOfTwoOfClubs(Player* _player)
     return indexTwoClubs;
 }
 
+int GetNumOfCards(Player* _player)
+{
+    if (NULL == _player)
+    {
+        return 0;
+    }
+    return _player -> m_numOfCards;
+}
+
 /******************** Assistance Functions ********************/
 
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
@@ -183,15 +192,6 @@ int IsSameCard(void* _card, size_t _index, void* _tempCard)
     {
         return FALSE;
     }
-}
-
-int GetNumOfCards(Player* _player)
-{
-    if (NULL == _player)
-    {
-        return 0;
-    }
-    return _player -> m_numOfCards;
 }
 
 /*************** Assistance Functions for Tests ***************/

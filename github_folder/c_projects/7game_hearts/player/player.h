@@ -62,8 +62,21 @@ errors:         ERROR_POINTER_NULL: if _player is invalid.
 */
 ERRStat IsHavingTwoOfClubs(const Player* const _player);
 
+/*
+description:    finds the index of Two of Clubs if there it exist at the given player.
+arguments:      _player: pointer to the player.
+return value:   if it found - the index of the card.
+                if it's not found - index of the number of cards in the hand of the player.
+errors:         ERROR_POINTER_NULL - if _player is invalid.
+*/
 int FindIndexOfTwoOfClubs(Player* _player);
 
+/*
+description:    getting the number of cards in at the given player.
+arguments:      _player: pointer to the player.
+return value:   the number of cards at the player.
+errors:         none.
+*/
 int GetNumOfCards(Player* _player);
 
 #endif /* __PLAYER_H__ */
