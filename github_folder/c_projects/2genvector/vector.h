@@ -114,8 +114,8 @@ arguments:		_vector - vector to be iterated over.
 return value:	the count number of iterations that was done here. 
 equivalent to:	for(i = 0; i < VectorSize(v); ++i){
 					VectorGet(v, i, &elem);
-					if(_action(elem, i, _context) == 0)
-					break;} return i} 
+					if(_action(elem, i, _context) == 1)
+					break;} return i}
 error:			0 - if _vector or _action is invalid */
 size_t VectorForEach(const Vector* _vector, VectorElementAction _action, void* _context);
 

@@ -1,6 +1,6 @@
 #include <stdlib.h>                     /* for malloc */
 #include <string.h>                     /* for strcpy */
-#include <stdio.h>
+#include <stdio.h>                      /* to delete */
 
 #include "player.h"
 #include "../../2genvector/vector.h"    /* for cards vector */
@@ -20,6 +20,7 @@ static ERRStat DoInsertion(Player* _player, Card* _card,
     int _index);
 
 int IsSameCard(void* _card, size_t _index, void* _tempCard);
+int HaveOtherThanHearts(void* _card, size_t _index, void* _context);
 
 /*************** Assistance Functions for Tests ***************/
 void GetName(Player* _player, char* _item);
@@ -158,6 +159,24 @@ int GetNumOfCards(Player* _player)
     return _player -> m_numOfCards;
 }
 
+ERRStat MayStartWithHearts(Player* _player)
+{
+    size_t indexOfCardDifferFromHearts = 0;
+    if (NULL == _player)
+    {
+        return FALSE;
+    }
+    indexOfCardDifferFromHearts = VectorForEach(_player -> m_cards, HaveOtherThanHearts, NULL);
+    if (indexOfCardDifferFromHearts == _player -> m_numOfCards)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
 /******************** Assistance Functions ********************/
 
 static ERRStat IsSuitLower(Card* _card, Card* _tempCard)
@@ -188,6 +207,19 @@ int IsSameCard(void* _card, size_t _index, void* _tempCard)
         {
             return TRUE;
         }
+    else
+    {
+        return FALSE;
+    }
+}
+
+int HaveOtherThanHearts(void* _card, size_t _index, void* _context)
+{
+    printf("%d\n", (*(Card*)_card).m_suit);     /* tot delete */
+    if ( HEARTS != (*(Card*)_card).m_suit )
+    {
+        return TRUE;
+    }
     else
     {
         return FALSE;

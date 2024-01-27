@@ -30,9 +30,10 @@ static void RemoveCardsFromTable(Vector* _table);
 
 static Card* SelectTwoOfClubs(Player* _player);
 static Card* SelectCard(Player* _player, Suit _leadingSuit);
+static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts);
 
 static int SecondStage(Round* _round, Vector* _table, Player** _players);
-static int ThirdStage(Round* _round, Vector* _table, int _startingPlayer);
+static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer);
 static int FindTwoClubs(Player** _players, int _numOfPlayers);
 static int WhoTakesTheCards(const Vector* const _cardsOnTable);
 
@@ -131,8 +132,8 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     SortCards(_round -> m_players, _round -> m_roundNum, _round -> m_numOfPlayers);
     FirstStage(_round, _direction);
     startingPlayer = SecondStage(_round, table, _round -> m_players);
+    ThirdStage(_round, _round -> m_players, table, startingPlayer);
     /*
-    ThirdStage(_round, table, startingPlayer);
     StartRound(Round* _round, Player** _players)
     {
         int counter, i, playerGetsCards, points;
@@ -179,9 +180,50 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
 
 /******************** Assistance Functions ********************/
 
-static int ThirdStage(Round* _round, Vector* _table, int _startingPlayer)
+static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer)
 {
+    int i, numOfCards;
+    ERRStat haveOnlyHerts = MayStartWithHearts(_players[_startingPlayer]);
+    Card* selectedCard;
+    numOfCards = GetNumOfCards(_players[_startingPlayer]);
+    selectedCard = SelectFirstCard(_players[_startingPlayer], haveOnlyHerts);
 
+    PrintCard(selectedCard);
+    free(selectedCard);     /* to add it to table instead of free */
+    
+    return 0;
+}
+
+static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts)
+{
+    int i, numOfCards, indexSelected;
+    void* hand[INITIAL_NUM_OF_CARDS];
+    if (BOT == GetPlayerType(_player))
+    {
+        numOfCards = GetNumOfCards(_player);
+        TakeAllCardsFromPlayer(_player, hand, numOfCards);
+        indexSelected = numOfCards - 1;
+        if (FALSE == _canStartHearts && HEARTS == ((Card*)hand[indexSelected]) -> m_suit)
+        {
+            while ( ((Card*)hand[indexSelected]) -> m_suit == HEARTS)
+            {
+                --indexSelected;
+            }
+        }
+        for (i = numOfCards - 1; i > indexSelected; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        for (i = indexSelected - 1; i != -1 ; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        return (Card*)hand[indexSelected];
+    }
+    else if (HUMAN == GetPlayerType(_player))
+    {
+        printf("\n\n\n ERROR: HUMAN IS NOT DEALT WITH\n");
+    }
 }
 
 static int SecondStage(Round* _round, Vector* _table, Player** _players)
@@ -278,7 +320,7 @@ static int WhoTakesTheCards(const Vector* const _cardsOnTable)
 
 static Card* SelectCard(Player* _player, Suit _leadingSuit)
 {
-    int i, numOfCards,  indexOfHighestRank;
+    int i, numOfCards, indexOfHighestRank;
     Rank highest;
     void* hand[INITIAL_NUM_OF_CARDS];
     if (BOT == GetPlayerType(_player))

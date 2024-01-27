@@ -79,4 +79,6 @@ errors:         none.
 */
 int GetNumOfCards(Player* _player);
 
+ERRStat MayStartWithHearts(Player* _player);
+
 #endif /* __PLAYER_H__ */
