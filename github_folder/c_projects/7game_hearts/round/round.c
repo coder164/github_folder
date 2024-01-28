@@ -132,48 +132,11 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     SortCards(_round -> m_players, _round -> m_roundNum, _round -> m_numOfPlayers);
     FirstStage(_round, _direction);
     startingPlayer = SecondStage(_round, table, _round -> m_players);
-    ThirdStage(_round, _round -> m_players, table, startingPlayer);
-    /*
-    StartRound(Round* _round, Player** _players)
+    _round -> m_numOfPlayers;
+    while (0 != GetNumOfCards(_round -> m_players[0]))
     {
-        int counter, i, playerGetsCards, points;
-        Card** CardsOnTheTable[4];
-        Card* cardRecieved;
-        Suit leadingSuit;
-        currentPlayer = FindPLayerOwnsTwoClubs(Player** _players)
-        for (counter = 0; counter != INITIAL_NUM_OF_CARDS; ++counter)
-        {
-            for (i = 0; i != _round.m_numOfPlayers; ++i)
-            {
-                cardRecieved = Card* PlayHand(_players[currentPlayer]);
-                if (0 == i)
-                {
-                    leadingSuit = cardRecieved.m_suit;
-                }
-                Card[currentPlayer] = cardRecieved;
-                ++(currentPlayer);
-                currentPlayer %= 4;
-            }
-            points = CalculatePenalties(CardsOnTheTable);
-            cardRecieved = BiggestCard(CardsOnTheTable, leadingSuit);
-            playerGetsCards = int FindPlayer(CardsOnTheTable, cardRecieved, numOfPlayers)
-            {
-                int indexOfPlayer;
-                for (indexOfPlayer = 0; indexOfPlayer != numOfPlayers; ++i)
-                {
-                    if (CardsOnTheTable[indexOfPlayer].m_suit == cardRecieved.m_suit
-                        && CardsOnTheTable[indexOfPlayer].m_rank == cardRecieved.m_rank)
-                        {
-                            break;
-                        }
-                }
-                return indexOfPlayer;
-            }
-            _players[playerGetsCards].m_playersPoints += points;
-        }
+        startingPlayer = ThirdStage(_round, _round -> m_players, table, startingPlayer);
     }
-    VectorDestroy(&table, DestroyCard);
-    */
     VectorDestroy(&table, NULL);
     return ERROR_SUCCESS;
 }
@@ -182,48 +145,39 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
 
 static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer)
 {
-    int i, numOfCards;
+    int i, numOfCards, remainingPlayers, currentPlayer, numOfPlayers, playerTakesCards;
     ERRStat haveOnlyHerts = MayStartWithHearts(_players[_startingPlayer]);
     Card* selectedCard;
+    Suit leadingSuit;
+    void* tempCard;     /* for printing */
     numOfCards = GetNumOfCards(_players[_startingPlayer]);
     selectedCard = SelectFirstCard(_players[_startingPlayer], haveOnlyHerts);
-
-    PrintCard(selectedCard);
-    free(selectedCard);     /* to add it to table instead of free */
+    VectorAppend(_table, selectedCard);
+    leadingSuit = selectedCard -> m_suit;
+    remainingPlayers = _round -> m_numOfPlayers - 1;
+    currentPlayer = _startingPlayer + 1;
+    numOfPlayers = _round -> m_numOfPlayers;
+    for (i = 0; i != remainingPlayers; ++i)
+    {
+        selectedCard = SelectCard(_players[currentPlayer %numOfPlayers], leadingSuit);
+        VectorAppend(_table, selectedCard);
+        ++currentPlayer;
+    }
     
-    return 0;
-}
+    for (i = 0; i != numOfPlayers; ++i)
+    {
+        VectorGet(_table, i, &tempCard);
+        PrintCard((Card*)tempCard);
+    }
+    putchar('\n');
 
-static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts)
-{
-    int i, numOfCards, indexSelected;
-    void* hand[INITIAL_NUM_OF_CARDS];
-    if (BOT == GetPlayerType(_player))
-    {
-        numOfCards = GetNumOfCards(_player);
-        TakeAllCardsFromPlayer(_player, hand, numOfCards);
-        indexSelected = numOfCards - 1;
-        if (FALSE == _canStartHearts && HEARTS == ((Card*)hand[indexSelected]) -> m_suit)
-        {
-            while ( ((Card*)hand[indexSelected]) -> m_suit == HEARTS)
-            {
-                --indexSelected;
-            }
-        }
-        for (i = numOfCards - 1; i > indexSelected; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
-        for (i = indexSelected - 1; i != -1 ; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
-        return (Card*)hand[indexSelected];
-    }
-    else if (HUMAN == GetPlayerType(_player))
-    {
-        printf("\n\n\n ERROR: HUMAN IS NOT DEALT WITH\n");
-    }
+    playerTakesCards = WhoTakesTheCards(_table);
+    AddPoints(_round, _table, playerTakesCards);
+
+    printf("points = %d\n", _round -> m_playersPoints[playerTakesCards]);
+
+    RemoveCardsFromTable(_table);
+    return playerTakesCards;
 }
 
 static int SecondStage(Round* _round, Vector* _table, Player** _players)
@@ -260,6 +214,38 @@ static int SecondStage(Round* _round, Vector* _table, Player** _players)
 
     RemoveCardsFromTable(_table);
     return playerTakesCards;
+}
+
+static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts)
+{
+    int i, numOfCards, indexSelected;
+    void* hand[INITIAL_NUM_OF_CARDS];
+    if (BOT == GetPlayerType(_player))
+    {
+        numOfCards = GetNumOfCards(_player);
+        TakeAllCardsFromPlayer(_player, hand, numOfCards);
+        indexSelected = numOfCards - 1;
+        if (FALSE == _canStartHearts && HEARTS == ((Card*)hand[indexSelected]) -> m_suit)
+        {
+            while ( ((Card*)hand[indexSelected]) -> m_suit == HEARTS)
+            {
+                --indexSelected;
+            }
+        }
+        for (i = numOfCards - 1; i > indexSelected; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        for (i = indexSelected - 1; i != -1 ; --i)
+        {
+            GiveCardToPlayer(_player, hand[i]);
+        }
+        return (Card*)hand[indexSelected];
+    }
+    else if (HUMAN == GetPlayerType(_player))
+    {
+        printf("\n\n\n ERROR: HUMAN IS NOT DEALT WITH\n");
+    }
 }
 
 static void RemoveCardsFromTable(Vector* _table)

@@ -215,7 +215,7 @@ int IsSameCard(void* _card, size_t _index, void* _tempCard)
 
 int HaveOtherThanHearts(void* _card, size_t _index, void* _context)
 {
-    printf("%d\n", (*(Card*)_card).m_suit);     /* tot delete */
+    printf("%d\n", (*(Card*)_card).m_suit);     /* to delete */
     if ( HEARTS != (*(Card*)_card).m_suit )
     {
         return TRUE;
