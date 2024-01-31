@@ -1,6 +1,5 @@
 #include <stdlib.h>                     /* for malloc */
 #include <string.h>                     /* for strcpy */
-#include <stdio.h>                      /* to delete */
 
 #include "player.h"
 #include "../../2genvector/vector.h"    /* for cards vector */
@@ -215,7 +214,6 @@ int IsSameCard(void* _card, size_t _index, void* _tempCard)
 
 int HaveOtherThanHearts(void* _card, size_t _index, void* _context)
 {
-    printf("%d\n", (*(Card*)_card).m_suit);     /* to delete */
     if ( HEARTS != (*(Card*)_card).m_suit )
     {
         return TRUE;
