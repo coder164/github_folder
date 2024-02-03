@@ -35,7 +35,7 @@ static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts);
 static int SecondStage(Round* _round, Vector* _table, Player** _players);
 static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer);
 static int FindTwoClubs(Player** _players, int _numOfPlayers);
-static int WhoTakesTheCards(const Vector* const _cardsOnTable);
+static int WhoTakesTheCards(const Vector* const _cardsOnTable, int _startingPlayer);
 
 /*** TO TRANFER INTO UI MODULE ***/
 void PrintName(Player* _player);
@@ -173,14 +173,14 @@ static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _sta
     
     for (i = _startingPlayer; i != _startingPlayer + numOfPlayers; ++i)
     {
-        VectorGet(_table, i, &tempCard);
+        VectorGet(_table, i % numOfPlayers, &tempCard);
         printf("\nPlayer: ");
-        PrintName(_players[i]);
+        PrintName(_players[i % numOfPlayers]);
         printf("Puts: ");
         PrintCard((Card*)tempCard);
     }
 
-    playerTakesCards = WhoTakesTheCards(_table);
+    playerTakesCards = WhoTakesTheCards(_table, _startingPlayer);
     printf("\nplayer takes cards = %d\n", playerTakesCards);
 
     AddPoints(_round, _table, playerTakesCards);
@@ -218,7 +218,7 @@ static int SecondStage(Round* _round, Vector* _table, Player** _players)
     }
     putchar('\n');
 
-    playerTakesCards = WhoTakesTheCards(_table);
+    playerTakesCards = WhoTakesTheCards(_table, startingPlayer);
     AddPoints(_round, _table, playerTakesCards);
 
     printf("points = %d\n", _round -> m_playersPoints[playerTakesCards]);
@@ -227,18 +227,22 @@ static int SecondStage(Round* _round, Vector* _table, Player** _players)
     return playerTakesCards;
 }
 
-static int WhoTakesTheCards(const Vector* const _cardsOnTable)
+static int WhoTakesTheCards(const Vector* const _cardsOnTable, int _startingPlayer)
 {
     void* data;
     Suit leadingSuit;
     Rank highestRank;
     int whoTakes, i;
-    whoTakes = 0;
-    VectorGet(_cardsOnTable, 0, &data);
+    whoTakes = _startingPlayer;
+    VectorGet(_cardsOnTable, _startingPlayer, &data);
     leadingSuit = ((Card*)data) -> m_suit;
     highestRank = ((Card*)data) -> m_rank;
-    for (i = 1; i != VectorSize(_cardsOnTable); ++i)
+    for (i = 0; i != VectorSize(_cardsOnTable); ++i)
     {
+        if (i == _startingPlayer)
+        {
+            continue;
+        }
         VectorGet(_cardsOnTable, i, &data);
         if ( (*(Card*)data).m_suit == leadingSuit
             && (*(Card*)data).m_rank > highestRank)
