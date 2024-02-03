@@ -16,6 +16,7 @@
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
 
+static void GiveBackCards(Player* _player, void** _hand, int _endIndex, int _startIndex);
 static void FirstStage(Round* _round, TransferDirection _direction);
 static void TransferCards(Round* _round, TransferDirection _direction);
 static void SortCards(Player** _players, int _roundNum, int _numPlayers);
@@ -279,14 +280,8 @@ static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts)
                 --indexSelected;
             }
         }
-        for (i = numOfCards - 1; i > indexSelected; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
-        for (i = indexSelected - 1; i != -1 ; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
+        GiveBackCards(_player, hand, numOfCards - 1, indexSelected + 1);
+        GiveBackCards(_player, hand, indexSelected - 1, 0);
         return (Card*)hand[indexSelected];
     }
     else if (HUMAN == GetPlayerType(_player))
@@ -326,14 +321,8 @@ static Card* SelectCard(Player* _player, Suit _leadingSuit)
                 }
             }
         }
-        for (i = numOfCards - 1; i > indexOfHighestRank; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
-        for (i = indexOfHighestRank - 1; i != -1 ; --i)
-        {
-            GiveCardToPlayer(_player, hand[i]);
-        }
+        GiveBackCards(_player, hand, numOfCards -1, indexOfHighestRank + 1);
+        GiveBackCards(_player, hand, indexOfHighestRank - 1, 0);
         return (Card*)hand[indexOfHighestRank];
     }
     else if (HUMAN == GetPlayerType(_player))
@@ -344,24 +333,16 @@ static Card* SelectCard(Player* _player, Suit _leadingSuit)
 
 static Card* SelectTwoOfClubs(Player* _player)
 {
-    int i, indexOfTwoClubs, readAssistance, writeHand, end;
-    void* assistance[INITIAL_NUM_OF_CARDS];
+    int indexOfTwoClubs;
+    void* hand[INITIAL_NUM_OF_CARDS];
     PlayerType type = GetPlayerType(_player);
     if (type == BOT)
     {
-        indexOfTwoClubs = FindIndexOfTwoOfClubs(_player);
-        for (i = INITIAL_NUM_OF_CARDS - 1; i >= indexOfTwoClubs; --i)
-        {
-            TakeCardFromPlayer(_player, &(assistance[i]));
-        }
-        readAssistance = INITIAL_NUM_OF_CARDS - 1;
-        end = INITIAL_NUM_OF_CARDS - 1;
-        for (writeHand = indexOfTwoClubs; writeHand != end; ++writeHand)
-        {
-            GiveCardToPlayer(_player, assistance[readAssistance]);
-            --readAssistance;
-        }
-        return (Card*)assistance[indexOfTwoClubs];
+        indexOfTwoClubs = INITIAL_NUM_OF_CARDS - FindIndexOfTwoOfClubs(_player) - 1;
+        TakeAllCardsFromPlayer(_player, hand, INITIAL_NUM_OF_CARDS);
+        GiveBackCards(_player, hand, INITIAL_NUM_OF_CARDS - 1, indexOfTwoClubs +1);
+        GiveBackCards(_player, hand, indexOfTwoClubs -1, 0);
+        return (Card*)hand[indexOfTwoClubs];
     }
     else if (type == HUMAN)
     {
@@ -389,6 +370,15 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
         }
     }
     return ERROR_SUCCESS;
+}
+
+static void GiveBackCards(Player* _player, void** _hand, int _endIndex, int _startIndex)
+{
+    int i;
+    for (i = _endIndex; i >= _startIndex; --i)
+    {
+        GiveCardToPlayer(_player, _hand[i]);
+    }
 }
 
 static void AddPoints(Round* _round, Vector* _cardsOnTable ,int _indexOfPlayer)
