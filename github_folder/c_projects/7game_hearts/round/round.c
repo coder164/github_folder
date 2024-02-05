@@ -16,7 +16,7 @@
 /***************** Assitance Inner Functions ******************/
 static ERRStat HandoutCards(Player** _players, Round* _round);
 
-static void GiveBackCards(Player* _player, void** _hand, int _endIndex, int _startIndex);
+static void GiveBackCards(Player* _player, void** _hand, int _startIndex, int _endIndex);
 static void FirstStage(Round* _round, TransferDirection _direction);
 static void TransferCards(Round* _round, TransferDirection _direction);
 static void SortCards(Player** _players, int _roundNum, int _numPlayers);
@@ -26,7 +26,7 @@ static void CopyCardsPointers(void** _to, void** _from, int _start, int _end);
 static void TakeThreeCards(Player* _player, void** _cards);
 static void GiveThreeCards(Player* _player, void** _cards);
 static void AddPoints(Round* _round, Vector* _cardsOnTable ,int _indexOfPlayer);
-static void RemoveCardsFromTable(Vector* _table);
+static void EmptyTheTable(Vector* _table);
 
 static Card* SelectTwoOfClubs(Player* _player);
 static Card* SelectCard(Player* _player, Suit _leadingSuit);
@@ -112,7 +112,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     Deck* shuffledDeck;
     ERRStat resultStage;
     Vector* table;
-    int startingPlayer, i;
+    int nextStarting, i, remainingCards;
     if (NULL == _round)
     {
         return ERROR_POINTER_NULL;
@@ -133,17 +133,27 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     SortCards(_round -> m_players, _round -> m_roundNum, _round -> m_numOfPlayers);
     FirstStage(_round, _direction);
 
-    VectorDestroy(&table, NULL);
-    table = VectorCreate(_round -> m_numOfPlayers, 0);
+    putchar('\n');
+    PrintName(_round -> m_players[0]);
+    PrintAllCards(_round -> m_players[0], INITIAL_NUM_OF_CARDS);
+    putchar('\n');
+    PrintName(_round -> m_players[1]);
+    PrintAllCards(_round -> m_players[1], INITIAL_NUM_OF_CARDS);
+    putchar('\n');
+    PrintName(_round -> m_players[2]);
+    PrintAllCards(_round -> m_players[2], INITIAL_NUM_OF_CARDS);
+    putchar('\n');
+    PrintName(_round -> m_players[3]);
+    PrintAllCards(_round -> m_players[3], INITIAL_NUM_OF_CARDS);
 
-    startingPlayer = SecondStage(_round, table, _round -> m_players);
-    _round -> m_numOfPlayers;
-    for (i = GetNumOfCards(_round -> m_players[0]); i != 0; --i)
+    nextStarting = SecondStage(_round, table, _round -> m_players);
+	remainingCards = GetNumOfCards(_round -> m_players[nextStarting]);
+    /*
+    for (i = 0; i != remainingCards; ++i)
     {
-        VectorDestroy(&table, NULL);
-        table = VectorCreate(_round -> m_numOfPlayers, 0);
-        startingPlayer = ThirdStage(_round, _round -> m_players, table, startingPlayer);
+        nextStarting = ThirdStage(_round, _round -> m_players, table, nextStarting);
     }
+    */
     VectorDestroy(&table, NULL);
     return ERROR_SUCCESS;
 }
@@ -152,21 +162,20 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
 
 static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer)
 {
-    int i, numOfCards, remainingPlayers, currentPlayer, numOfPlayers, playerTakesCards;
+    int i, remainingPlayers, currentPlayer, numOfPlayers, playerTakesCards;
     ERRStat haveOnlyHerts = MayStartWithHearts(_players[_startingPlayer]);
     Card* selectedCard;
     Suit leadingSuit;
     void* tempCard;     /* for printing */
-    numOfCards = GetNumOfCards(_players[_startingPlayer]);
-    selectedCard = SelectFirstCard(_players[_startingPlayer], haveOnlyHerts);
-    VectorAppend(_table, selectedCard);
-    leadingSuit = selectedCard -> m_suit;
-    remainingPlayers = _round -> m_numOfPlayers - 1;
-    currentPlayer = _startingPlayer + 1;
     numOfPlayers = _round -> m_numOfPlayers;
+    selectedCard = SelectFirstCard(_players[_startingPlayer], haveOnlyHerts);
+    leadingSuit = selectedCard -> m_suit;
+    VectorAppend(_table, selectedCard);
+    remainingPlayers = numOfPlayers - 1;
+    currentPlayer = _startingPlayer + 1;
     for (i = 0; i != remainingPlayers; ++i)
     {
-        selectedCard = SelectCard(_players[currentPlayer %numOfPlayers], leadingSuit);
+        selectedCard = SelectCard(_players[currentPlayer % numOfPlayers], leadingSuit);
         VectorAppend(_table, selectedCard);
         ++currentPlayer;
     }
@@ -174,9 +183,9 @@ static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _sta
     for (i = _startingPlayer; i != _startingPlayer + numOfPlayers; ++i)
     {
         VectorGet(_table, i % numOfPlayers, &tempCard);
-        printf("\nPlayer: ");
+        putchar('\n');
         PrintName(_players[i % numOfPlayers]);
-        printf("Puts: ");
+        printf(" puts: ");
         PrintCard((Card*)tempCard);
     }
 
@@ -184,7 +193,7 @@ static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _sta
     printf("\nplayer takes cards = %d\n", playerTakesCards);
 
     AddPoints(_round, _table, playerTakesCards);
-    RemoveCardsFromTable(_table);
+    EmptyTheTable(_table);
     return playerTakesCards;
 }
 
@@ -208,12 +217,12 @@ static int SecondStage(Round* _round, Vector* _table, Player** _players)
         ++currentPlayer;
     }
 
+    putchar('\n');
     for (i = 0; i != numOfPlayers; ++i)
     {
         VectorGet(_table, i, &tempCard);
         printf("\nPlayer: ");
-        PrintName(_players[i]);
-        printf("Puts: ");
+        PrintName(_players[_table, (startingPlayer + i) % numOfPlayers]);
         PrintCard((Card*)tempCard);
     }
     putchar('\n');
@@ -221,9 +230,11 @@ static int SecondStage(Round* _round, Vector* _table, Player** _players)
     playerTakesCards = WhoTakesTheCards(_table, startingPlayer);
     AddPoints(_round, _table, playerTakesCards);
 
-    printf("points = %d\n", _round -> m_playersPoints[playerTakesCards]);
+    printf("player takes cards: ");
+    PrintName(_players[playerTakesCards]);
+    putchar('\n');
 
-    RemoveCardsFromTable(_table);
+	EmptyTheTable(_table);
     return playerTakesCards;
 }
 
@@ -232,32 +243,28 @@ static int WhoTakesTheCards(const Vector* const _cardsOnTable, int _startingPlay
     void* data;
     Suit leadingSuit;
     Rank highestRank;
-    int whoTakes, i;
+    int whoTakes, i, numOfPlayers, current;
     whoTakes = _startingPlayer;
-    VectorGet(_cardsOnTable, _startingPlayer, &data);
+    VectorGet(_cardsOnTable, 0, &data);
     leadingSuit = ((Card*)data) -> m_suit;
     highestRank = ((Card*)data) -> m_rank;
-    for (i = 0; i != VectorSize(_cardsOnTable); ++i)
+	numOfPlayers = VectorSize(_cardsOnTable);
+    for (i = 0; i < numOfPlayers; ++i)
     {
-        if (i == _startingPlayer)
-        {
-            continue;
-        }
         VectorGet(_cardsOnTable, i, &data);
-        if ( (*(Card*)data).m_suit == leadingSuit
-            && (*(Card*)data).m_rank > highestRank)
-            {
-                highestRank = (*(Card*)data).m_rank;
-                whoTakes = i;
-            }
+        if ( ((Card*)data) -> m_suit == leadingSuit
+            && ((Card*)data) -> m_rank > highestRank)
+        {
+            highestRank = ((Card*)data) -> m_rank;
+            whoTakes = (i + _startingPlayer) % numOfPlayers;
+        }
     }
     return whoTakes;
 }
 
 static int FindTwoClubs(Player** _players, int _numOfPlayers)
 {
-    int i, j;
-    void* hand[INITIAL_NUM_OF_CARDS];
+    int i;
     for (i = 0; i != _numOfPlayers; ++i)
     {
         if (IsHavingTwoOfClubs(_players[i]))
@@ -276,16 +283,16 @@ static Card* SelectFirstCard(Player* _player, ERRStat _canStartHearts)
     {
         numOfCards = GetNumOfCards(_player);
         TakeAllCardsFromPlayer(_player, hand, numOfCards);
-        indexSelected = numOfCards - 1;
+        indexSelected = 0;
         if (FALSE == _canStartHearts && HEARTS == ((Card*)hand[indexSelected]) -> m_suit)
         {
             while ( ((Card*)hand[indexSelected]) -> m_suit == HEARTS)
             {
-                --indexSelected;
+                ++indexSelected;
             }
         }
-        GiveBackCards(_player, hand, numOfCards - 1, indexSelected + 1);
-        GiveBackCards(_player, hand, indexSelected - 1, 0);
+        GiveBackCards(_player, hand, 0, indexSelected);
+        GiveBackCards(_player, hand, indexSelected + 1, numOfCards);
         return (Card*)hand[indexSelected];
     }
     else if (HUMAN == GetPlayerType(_player))
@@ -325,8 +332,8 @@ static Card* SelectCard(Player* _player, Suit _leadingSuit)
                 }
             }
         }
-        GiveBackCards(_player, hand, numOfCards -1, indexOfHighestRank + 1);
-        GiveBackCards(_player, hand, indexOfHighestRank - 1, 0);
+        GiveBackCards(_player, hand, 0, indexOfHighestRank);
+        GiveBackCards(_player, hand, indexOfHighestRank + 1, numOfCards);
         return (Card*)hand[indexOfHighestRank];
     }
     else if (HUMAN == GetPlayerType(_player))
@@ -342,10 +349,10 @@ static Card* SelectTwoOfClubs(Player* _player)
     PlayerType type = GetPlayerType(_player);
     if (type == BOT)
     {
-        indexOfTwoClubs = INITIAL_NUM_OF_CARDS - FindIndexOfTwoOfClubs(_player) - 1;
+        indexOfTwoClubs = FindIndexOfTwoOfClubs(_player);
         TakeAllCardsFromPlayer(_player, hand, INITIAL_NUM_OF_CARDS);
-        GiveBackCards(_player, hand, INITIAL_NUM_OF_CARDS - 1, indexOfTwoClubs +1);
-        GiveBackCards(_player, hand, indexOfTwoClubs -1, 0);
+        GiveBackCards(_player, hand, 0, indexOfTwoClubs);
+        GiveBackCards(_player, hand, indexOfTwoClubs + 1, INITIAL_NUM_OF_CARDS);
         return (Card*)hand[indexOfTwoClubs];
     }
     else if (type == HUMAN)
@@ -376,10 +383,10 @@ static ERRStat HandoutCards(Player** _players, Round* _round)
     return ERROR_SUCCESS;
 }
 
-static void GiveBackCards(Player* _player, void** _hand, int _endIndex, int _startIndex)
+static void GiveBackCards(Player* _player, void** _hand, int _startIndex, int _endIndex)
 {
     int i;
-    for (i = _endIndex; i >= _startIndex; --i)
+    for (i = _startIndex; i < _endIndex; ++i)
     {
         GiveCardToPlayer(_player, _hand[i]);
     }
@@ -558,21 +565,10 @@ static void GiveThreeCards(Player* _player, void** _cards)
     }
 }
 
-static void RemoveCardsFromTable(Vector* _table)
-{
-    int i;
-    void* value;
-    for (i = 0; i != VectorCapacity(_table); ++i)
-    {
-        VectorRemove(_table, &value);
-        free(value);
-    }
-}
-
 static void TakeAllCardsFromPlayer(Player* _player, void** _hand, int _numOfCards)
 {
     int i;
-    for (i = 0; i != _numOfCards; ++i)
+    for (i = _numOfCards - 1; i > -1 ; --i)
     {
         TakeCardFromPlayer(_player, &(_hand[i]));
     }
@@ -583,7 +579,7 @@ void PrintName(Player* _player)
 	char name[30];
 	GetName(_player, name);
 	GetName(_player, name);
-	printf("%s\n", name);
+	printf("%s", name);
 }
 
 void PrintAllCards(Player* _player, int _numOfCards)
@@ -645,6 +641,18 @@ const char* TranslateSuitToStr(Suit _suit)
         case(CLUBS): return "CLUBS";
         default: return "ERROR: suit not valid";
     }    
+}
+
+static void EmptyTheTable(Vector* _table)
+{
+	int i, size;
+	void* item;
+	size = VectorSize(_table);
+	for (i = 0; i != size; ++i)
+	{
+		VectorRemove(_table, &item);
+		free(item);
+	}
 }
 
 /************** Assistance Functions for Tests ****************/
