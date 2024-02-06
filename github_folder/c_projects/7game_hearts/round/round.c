@@ -147,13 +147,14 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     PrintAllCards(_round -> m_players[3], INITIAL_NUM_OF_CARDS);
 
     nextStarting = SecondStage(_round, table, _round -> m_players);
+    printf("Next starting = %d\n", nextStarting);
 	remainingCards = GetNumOfCards(_round -> m_players[nextStarting]);
-    /*
+
     for (i = 0; i != remainingCards; ++i)
     {
         nextStarting = ThirdStage(_round, _round -> m_players, table, nextStarting);
     }
-    */
+
     VectorDestroy(&table, NULL);
     return ERROR_SUCCESS;
 }
@@ -180,11 +181,11 @@ static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _sta
         ++currentPlayer;
     }
     
-    for (i = _startingPlayer; i != _startingPlayer + numOfPlayers; ++i)
+    for (i = 0; i != numOfPlayers; ++i)
     {
-        VectorGet(_table, i % numOfPlayers, &tempCard);
+        VectorGet(_table, i, &tempCard);
         putchar('\n');
-        PrintName(_players[i % numOfPlayers]);
+        PrintName(_players[(i + _startingPlayer) % numOfPlayers]);
         printf(" puts: ");
         PrintCard((Card*)tempCard);
     }
