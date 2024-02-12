@@ -79,6 +79,13 @@ errors:         none.
 */
 int GetNumOfCards(Player* _player);
 
+/*
+description:    check if the player is allowed to start with Hearts suit.
+arguments:      _player: pointer to the player.
+return value:   TRUE - if the player is allowed
+                FALSE - if the player is not allowed
+errors:         none.
+*/
 ERRStat MayStartWithHearts(Player* _player);
 
 #endif /* __PLAYER_H__ */
