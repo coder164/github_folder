@@ -5,10 +5,11 @@
 #include "../round/round.h"
 #include "../player/player.h"
 #include "../errstat.h"     /* for error statuses */
+#include <stdio.h>          /* for printing at developement */
 
 struct Game {
     Player** m_players;     /* array of Players*/
-    int* m_roundScores;
+    int* m_scores;
     int m_numOfPlayers;
     int m_roundNum;
 };
@@ -17,10 +18,10 @@ struct Game {
 /* inner function declare */
 static ERRStat CheckParamCreate(char* _playerNames[],
     int _numOfPlayers,PlayerType _type);
-static Game* AllocateNewGame(char* _playerNames[], int _numOfPlayers);
+static Game* AllocateNewGame(int _numOfPlayers);
 static ERRStat CreatePlayers(Game* _newGame, char* _playerNames[],
     int _numOfPlayers, PlayerType _type);
-static void FreeMembers(Game* _game, int _index);
+static void FreeMembers(Game* _game, int _lastIndex);
 ERRStat ExecuteRounds(Game* _game, Round* _round);
 static TransferDirection ChangeDirection(TransferDirection _lastDirection);
 /**************************************************************/
@@ -28,24 +29,34 @@ Game* GameCreate(char* _playerNames[], int _numOfPlayers,
     PlayerType _type)
 {
     Game* newGame;
-    ERRStat resInnerFunc;
-    resInnerFunc = CheckParamCreate(_playerNames, _numOfPlayers, _type);
-    if (resInnerFunc != ERROR_SUCCESS) 
+    int* scores;
+    ERRStat validParam;
+    validParam = CheckParamCreate(_playerNames, _numOfPlayers, _type);
+    if (validParam != ERROR_SUCCESS) 
     {
         return NULL;
     }
-    newGame = AllocateNewGame(_playerNames, _numOfPlayers);
+    newGame = (Game*)malloc(sizeof(Game));
     if (NULL == newGame) 
     {
-        free(newGame -> m_roundScores);
+        return NULL;
+    }
+    scores = (int*)calloc(_numOfPlayers, sizeof(int));
+    if (NULL == scores) 
+    {
         free(newGame);
         return NULL;
     }
+    newGame -> m_scores = scores;
+    newGame -> m_numOfPlayers = _numOfPlayers;
+    newGame -> m_roundNum = 0;
+    /*
     resInnerFunc = CreatePlayers(newGame, _playerNames, _numOfPlayers, _type);
     if (resInnerFunc != ERROR_SUCCESS) 
     {
         return NULL;
     }
+    */
     return newGame;
 }
 /**************************************************************/
@@ -59,8 +70,10 @@ void GameDestroy(Game** _game)
     {
         return;
     }
+    /*
     FreeMembers(*_game, ((*_game) -> m_numOfPlayers) - 1);
-    free((*_game) -> m_roundScores);
+    */
+    free((*_game) -> m_scores);
     free(*_game);
     *_game = NULL;
 }
@@ -74,7 +87,7 @@ ERRStat GameRun(Game* _game)
     {
         return ERROR_POINTER_NULL;
     }
-    newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers);
+    newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers, 0);
     if (NULL == newRound)
     {
         return ERROR_GENERAL;
@@ -143,24 +156,7 @@ static ERRStat CheckParamCreate(char* _playerNames[],
     }
     return ERROR_SUCCESS;
 }
-/**************************************************************/
-static Game* AllocateNewGame(char* _playerNames[], int _numOfPlayers)
-{
-    Game* newGame = (Game*)malloc(sizeof(Game));
-    int** roundScores;
-    if (NULL == newGame) 
-    {
-        return NULL;
-    }
-    roundScores = (int**)calloc(_numOfPlayers, sizeof(int*));
-    if (NULL == roundScores) 
-    {
-        free(newGame);
-        return NULL;
-    }
-    newGame -> m_roundScores = *roundScores;
-    return newGame;
-}
+
 /**************************************************************/
 
 static ERRStat CreatePlayers(Game* _newGame, char* _playerNames[],
@@ -188,12 +184,12 @@ static ERRStat CreatePlayers(Game* _newGame, char* _playerNames[],
 }
 
 /**************************************************************/
-static void FreeMembers(Game* _game, int _index) 
+static void FreeMembers(Game* _game, int _lastIndex) 
 {
-    while (_index >= 0) 
+    while (_lastIndex >= 0) 
     {
-        free(_game -> m_players[_index]);
-        --_index;
+        free(_game -> m_players[_lastIndex]);
+        --_lastIndex;
     }
     free(_game -> m_players);
 }

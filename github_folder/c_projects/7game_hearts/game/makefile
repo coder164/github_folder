@@ -22,11 +22,11 @@ game.o: game.c game.h $(P_ROUND)round.h $(P_PLAYER)player.h \
 	-I $(P_ERRSTAT) -c game.c
 
 round.o: $(P_ROUND)round.c $(P_ROUND)round.h $(P_DECK)deck.h \
-	$(P_PLAYER)player.h $(P_CARDS)cards.h game.h \
-	$(P_VEC)vector.h $(P_ERRSTAT)errstat.h
+	$(P_PLAYER)player.h $(P_ERRSTAT)errstat.h $(P_VEC)vector.h \
+	$(P_ERRSTAT) $(P_CARDS)cards.h
 
 	$(CC) $(CFLAGS) -I $(P_ROUND) -I $(P_DECK) -I $(P_PLAYER) \
-	-I $(P_CARDS) -I $(P_VEC) -I $(P_ERRSTAT) -c $(P_ROUND)round.c
+	-I $(P_CARDS) -I $(P_VEC) -c $(P_ROUND)round.c
 
 deck.o: $(P_DECK)deck.c $(P_DECK)deck.h $(P_CARDS)cards.h \
 	$(P_VEC)vector.h
@@ -53,8 +53,11 @@ testgame.o: testgame.c game.h $(P_ROUND)round.h \
 	$(CC) $(CFLAGS) -I $(P_ROUND) -I $(P_PLAYER) \
 	-I $(P_ERRSTAT) -c testgame.c
 
+valgrind:
+	valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./testgame.out
+
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -f $(TARGET) $(OBJS) V2.log
 	
 	
 	

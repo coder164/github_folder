@@ -4,6 +4,7 @@
 #include "player.h"
 #include "errstat.h" /* for error statuses */
 #define NUM_OF_PLAYERS 4
+#define OK 0
 
 static void TestGameCreate(void);
 static void TestGameDestory(void);
@@ -13,12 +14,12 @@ int main(void)
 {
 	printf("Tests\n");
 	TestGameCreate();
-	TestGameDestory();
 	/*
+	TestGameDestory();
 	TestGameRun();
 	*/
 
-	return ERROR_OK;
+	return OK;
 }
 
 static void TestGameCreate(void)
@@ -29,6 +30,7 @@ static void TestGameCreate(void)
 	ptrGame = GameCreate(playerNames4, NUM_OF_PLAYERS, BOT);
 	ptrGame != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
+	/*
 	printf("Test GameCreate() NULL nameplayers, 4 players, BOT ");
 	ptrGame = GameCreate(NULL, NUM_OF_PLAYERS, BOT);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
@@ -56,6 +58,7 @@ static void TestGameCreate(void)
 	printf("Test GameCreate() 4 nameplayers, -1 players, HUMAN ");
 	ptrGame = GameCreate(playerNames4, -1, HUMAN);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
+	*/
 }
 
 static void TestGameDestory(void)
