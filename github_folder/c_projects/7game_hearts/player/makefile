@@ -18,8 +18,8 @@ deck.o: $(P_DECK)deck.c $(P_DECK)deck.h $(P_CARDS)cards.h $(P_VEC)vector.h
 vector.o: $(P_VEC)vector.c $(P_VEC)vector.h
 	$(CC) $(CFLAGS) -I $(P_VEC) -c $(P_VEC)vector.c
 
-player.o: player.c player.h $(P_CARDS)cards.h $(P_VEC)vector.c $(P_ERRSTAT)errstat.h $(P_DECK)deck.h
-	$(CC) $(CFLAGS) -I $(P_CARDS) -I $(P_VEC) -I $(P_ERRSTAT) -I $(P_DECK) -c player.c
+player.o: player.c player.h $(P_CARDS)cards.h $(P_VEC)vector.c $(P_DECK)deck.h
+	$(CC) $(CFLAGS) -I $(P_CARDS) -I $(P_VEC) -I $(P_DECK) -c player.c
 
 testplayer.o: testplayer.c $(P_CARDS)cards.h $(P_ERRSTAT)errstat.h $(P_DECK)deck.h
 	$(CC) $(CFLAGS) -I $(P_CARDS) -I $(P_ERRSTAT) -I $(P_DECK) -c testplayer.c
