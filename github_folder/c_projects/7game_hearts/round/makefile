@@ -13,8 +13,8 @@ P_ERRSTAT = ../
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS)
 
-round.o: round.c round.h $(P_DECK)deck.h $(P_PLAYER)player.h $(P_ERRSTAT)errstat.h $(P_VEC)vector.h $(P_CARDS)cards.h
-	$(CC) $(CFLAGS) -I $(P_DECK) -I $(P_PLAYER) -I $(P_ERRSTAT) -I $(P_CARDS) -I $(P_VEC) -c round.c
+round.o: round.c round.h $(P_DECK)deck.h $(P_PLAYER)player.h $(P_VEC)vector.h $(P_CARDS)cards.h
+	$(CC) $(CFLAGS) -I $(P_DECK) -I $(P_PLAYER) -I $(P_CARDS) -I $(P_VEC) -c round.c
 
 deck.o: $(P_DECK)deck.c $(P_DECK)deck.h $(P_CARDS)cards.h $(P_VEC)vector.h
 	$(CC) $(CFLAGS) -I $(P_DECK) -I $(P_CARDS) -I $(P_VEC) -c $(P_DECK)deck.c
