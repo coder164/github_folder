@@ -14,61 +14,60 @@ int main(void)
 {
 	printf("Tests\n");
 	TestGameCreate();
-	/*
 	TestGameDestory();
+	/*
 	TestGameRun();
 	*/
-
 	return OK;
 }
 
 static void TestGameCreate(void)
 {
 	Game* ptrGame;
-	PlayerType types[] = {BOT, BOT, BOT, BOT};
+	PlayerType fourBots[] = {BOT, BOT, BOT, BOT};
+	PlayerType singleHumanThreeBots[] = {HUMAN, BOT, BOT, BOT};
 	char* playerNames4[] = {"David", "Shalom", "Lisa", "Irit"};
-	printf("Test GameCreate() nameplayers, 4 BOTs, 4 players ");
-	ptrGame = GameCreate(playerNames4, types, NUM_OF_PLAYERS);
+	printf("Test GameCreate() nameplayers, %d BOTs, %d players ", NUM_OF_PLAYERS, NUM_OF_PLAYERS);
+	ptrGame = GameCreate(playerNames4, fourBots, NUM_OF_PLAYERS);
 	ptrGame != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	printf("Test GameCreate() NULL , 4 BOTs, 4 players ");
-	ptrGame = GameCreate(NULL, types, NUM_OF_PLAYERS);
+	printf("Test GameCreate() NULL, %d BOTs, %d players ", NUM_OF_PLAYERS, NUM_OF_PLAYERS);
+	ptrGame = GameCreate(NULL, fourBots, NUM_OF_PLAYERS);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
 	
-	printf("Test GameCreate() nameplayers, 4 BOTs, 0 players ");
-	ptrGame = GameCreate(playerNames4, types, 0);
+	printf("Test GameCreate() nameplayers, %d BOTs, 0 players ", NUM_OF_PLAYERS);
+	ptrGame = GameCreate(playerNames4, fourBots, 0);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	printf("Test GameCreate() 4 nameplayers,  4 BOTs, -1 players ");
-	ptrGame = GameCreate(playerNames4, types, -1);
+	printf("Test GameCreate() nameplayers,  %d BOTs, -1 players ", NUM_OF_PLAYERS);
+	ptrGame = GameCreate(playerNames4, fourBots, -1);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	/*
-	printf("Test GameCreate() 4 nameplayers, 4 players, BOT ");
-	ptrGame = GameCreate(playerNames4, NUM_OF_PLAYERS, HUMAN);
+	printf("Test GameCreate() nameplayers, 1 HUMAN 3 BOTs, %d players ", NUM_OF_PLAYERS);
+	ptrGame = GameCreate(playerNames4, singleHumanThreeBots, NUM_OF_PLAYERS);
 	ptrGame != NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	printf("Test GameCreate() NULL nameplayers, 4 players, HUMAN ");
-	ptrGame = GameCreate(NULL, NUM_OF_PLAYERS, HUMAN);
+	printf("Test GameCreate() NULL nameplayers, 1 HUMAN 3 BOTs, %d players ", NUM_OF_PLAYERS);
+	ptrGame = GameCreate(NULL, singleHumanThreeBots, NUM_OF_PLAYERS);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	printf("Test GameCreate() 4 nameplayers, 0 players, HUMAN ");
-	ptrGame = GameCreate(playerNames4, 0, HUMAN);
+	printf("Test GameCreate() 4 nameplayers, 1 HUMAN 3 BOTs, 0 players ");
+	ptrGame = GameCreate(playerNames4, singleHumanThreeBots, 0);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
-	printf("Test GameCreate() 4 nameplayers, -1 players, HUMAN ");
-	ptrGame = GameCreate(playerNames4, -1, HUMAN);
+	printf("Test GameCreate() 4 nameplayers, 1 HUMAN 3 BOTs, -1 players ");
+	ptrGame = GameCreate(playerNames4, singleHumanThreeBots, -1);
 	ptrGame == NULL ? printf("- PASS\n") : printf("- FAIL \n");
-	*/
 }
-/*
+
 static void TestGameDestory(void)
 {
 	Game* ptrGame;
 	char* playerNames4[4] = {"David", "Shalom", "Lisa", "Irit"};
+	PlayerType fourBots[] = {BOT, BOT, BOT, BOT};
 	printf("Test GameDestroy() ptrGame ");
-	ptrGame = GameCreate(playerNames4, NUM_OF_PLAYERS, BOT);
+	ptrGame = GameCreate(playerNames4, fourBots, NUM_OF_PLAYERS);
 	GameDestroy(&ptrGame);
 	ptrGame == NULL ? printf("- PASS\n") : printf(" FAIL \n");
 	printf("Test GameDestroy() for double destroy ");
@@ -79,6 +78,7 @@ static void TestGameDestory(void)
 	printf("- PASS\n");
 }
 
+/*
 static void TestGameRun(void)
 {
 	Game* ptrGame;
