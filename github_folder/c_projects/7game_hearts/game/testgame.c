@@ -12,12 +12,11 @@ static void TestGameRun(void);
 
 int main(void)
 {
-	printf("Tests\n");
+	/*
 	TestGameCreate();
 	TestGameDestory();
-	/*
-	TestGameRun();
 	*/
+	TestGameRun();
 	return OK;
 }
 
@@ -78,20 +77,18 @@ static void TestGameDestory(void)
 	printf("- PASS\n");
 }
 
-/*
 static void TestGameRun(void)
 {
 	Game* ptrGame;
 	ERRStat resGameRun;
 	char* playerNames4[4] = {"David", "Shalom", "Lisa", "Irit"};
+	PlayerType fourBots[] = {BOT, BOT, BOT, BOT};
 	printf("Test GameRun() for valid ptrGame ");
-	ptrGame = GameCreate(playerNames4, NUM_OF_PLAYERS, BOT);
+	ptrGame = GameCreate(playerNames4, fourBots, NUM_OF_PLAYERS);
 	resGameRun = GameRun(ptrGame);
 	resGameRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
-	to continue here
 	GameDestroy(&ptrGame);
 }
-*/
 
 
 

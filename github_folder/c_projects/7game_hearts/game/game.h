@@ -11,8 +11,8 @@ typedef struct Game Game;
 /*
 description:	create a new Game object.
 arguments:		_playerNames: array of player names.
-                _numOfPlayers: the number of players.
                 _types: array of types of players, BOT/HUMAN.
+                _numOfPlayers: the number of players.
 return value:	pointer of the new Game.
 errors:			NULL - if number of players is less than 1.
                      - if _playerNames is NULL.

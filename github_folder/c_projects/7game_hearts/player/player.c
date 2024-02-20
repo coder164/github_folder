@@ -118,6 +118,15 @@ PlayerType GetPlayerType(Player* _player)
     return _player -> m_type;
 }
 
+char* GetPlayerName(Player* _player)
+{
+    if (NULL == _player)
+    {
+        return NULL;
+    }
+    return _player -> m_name;
+}
+
 ERRStat IsHavingTwoOfClubs(const Player* const _player)
 {
     size_t indexFound = 0;

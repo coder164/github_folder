@@ -54,6 +54,13 @@ errors:			UNDEFINED: if _player is invalid. */
 PlayerType GetPlayerType(Player* _player);
 
 /*
+description:	get pointer to the name of the player.
+arguments:		_player: pointer to the player.
+return value:	pointer to the first letter of the name of the player.
+errors:			NULL: if _player is invalid. */
+char* GetPlayerName(Player* _player);
+
+/*
 description:    check if the player has the card two of clubs.
 arguments:      _player: pointer to the player.
 return value:   TRUE: if he has the card.

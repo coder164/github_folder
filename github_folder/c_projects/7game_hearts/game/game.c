@@ -85,22 +85,41 @@ void GameDestroy(Game** _game)
     *_game = NULL;
 }
 
-/*
 ERRStat GameRun(Game* _game)
 {
     Round* newRound = NULL;
     ERRStat resultRunRound;
     TransferDirection direction = LEFT;
+    Player** arrPlayers;
+    void* currentPlayer;
+    char* name;
+    int i;
     if (NULL == _game)
     {
         return ERROR_POINTER_NULL;
     }
-    newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers, 0);
+    arrPlayers = (Player**)malloc(_game -> m_numOfPlayers * sizeof(Player*));
+    if (NULL == arrPlayers)
+    {
+        return ERROR_OUT_OF_MEMMORY;
+    }
+    for (i = 0; i != _game -> m_numOfPlayers; ++i)
+    {
+        VectorGet(_game -> m_players, i, &currentPlayer);
+        name = GetPlayerName( (Player*)currentPlayer);
+        arrPlayers[i] = PlayerCreate(name, GetPlayerType(currentPlayer));
+    }
+    newRound = RoundCreate(arrPlayers, _game -> m_numOfPlayers, 0);
     if (NULL == newRound)
     {
         return ERROR_GENERAL;
     }
-        RunRound() is not working yet
+
+    RoundDestroy(&newRound);
+    free(arrPlayers);
+    return ERROR_SUCCESS;
+/*
+        RunRound() is didn't work at the time
         resultRunRound = RunRound(newRound, direction);
         if (resultRunRound != ERROR_SUCCESS)
         {
@@ -110,8 +129,8 @@ ERRStat GameRun(Game* _game)
         to continue here Check for losers
     RoundDestroy(&newRound);
     return ERROR_SUCCESS;
-}
 */
+}
 /******************** Assistance Functions ********************/
 
 static Vector* CreatePlayers(char* _playerNames[], PlayerType _types[],
