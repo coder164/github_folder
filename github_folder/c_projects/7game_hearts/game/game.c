@@ -3,13 +3,12 @@
 
 #include "game.h"
 #include "../round/round.h"
-#include "../../2genvector/vector.h"    /* for m_players */
 #include "../player/player.h"
 #include "../errstat.h"                 /* for error statuses */
 #include <stdio.h>                      /* for printing at developement */
 
 /***************** Assitance Inner Functions ******************/
-static Vector* CreatePlayers(char* _playerNames[], PlayerType _types[],
+static Player** CreatePlayers(char* _playerNames[], PlayerType _types[],
     int _numOfPlayers);
 
 static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
@@ -17,14 +16,14 @@ static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
 
 static ERRStat ExecuteRounds(Game* _game, Round* _round);
 
-static void FreeMembers(Vector* _players, int _numOfPlayers);
+static void FreeMembers(Player** _players, int _numOfPlayers);
 
 static TransferDirection ChangeDirection(TransferDirection _lastDirection);
 
 /**************************************************************/
 
 struct Game {
-    Vector* m_players;
+    Player** m_players;
     int* m_scores;
     int m_numOfPlayers;
     int m_roundNum;
@@ -37,7 +36,7 @@ Game* GameCreate(char* _playerNames[], PlayerType _types[],
     Game* newGame;
     int* scores;
     ERRStat validParam;
-    Vector* players;
+    Player** players;
     validParam = CheckParamCreate(_playerNames, _types, _numOfPlayers);
     if (validParam != ERROR_SUCCESS) 
     {
@@ -79,7 +78,7 @@ void GameDestroy(Game** _game)
         return;
     }
     FreeMembers((*_game) -> m_players, (*_game) -> m_numOfPlayers);
-    VectorDestroy(&((*_game) -> m_players), NULL);
+    free((*_game) -> m_players);
     free((*_game) -> m_scores);
     free(*_game);
     *_game = NULL;
@@ -90,7 +89,6 @@ ERRStat GameRun(Game* _game)
     Round* newRound = NULL;
     ERRStat resultRunRound;
     TransferDirection direction = LEFT;
-    Player** arrPlayers;
     void* currentPlayer;
     char* name;
     int i;
@@ -98,25 +96,19 @@ ERRStat GameRun(Game* _game)
     {
         return ERROR_POINTER_NULL;
     }
-    arrPlayers = (Player**)malloc(_game -> m_numOfPlayers * sizeof(Player*));
-    if (NULL == arrPlayers)
-    {
-        return ERROR_OUT_OF_MEMMORY;
-    }
-    for (i = 0; i != _game -> m_numOfPlayers; ++i)
-    {
-        VectorGet(_game -> m_players, i, &currentPlayer);
-        name = GetPlayerName( (Player*)currentPlayer);
-        arrPlayers[i] = PlayerCreate(name, GetPlayerType(currentPlayer));
-    }
-    newRound = RoundCreate(arrPlayers, _game -> m_numOfPlayers, 0);
+    newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers, 0);
     if (NULL == newRound)
     {
         return ERROR_GENERAL;
     }
+    resultRunRound = RunRound(newRound, direction);
+    if (ERROR_SUCCESS != resultRunRound)
+    {
+        RoundDestroy(&newRound);
+        return resultRunRound;
+    }
 
     RoundDestroy(&newRound);
-    free(arrPlayers);
     return ERROR_SUCCESS;
 /*
         RunRound() is didn't work at the time
@@ -133,13 +125,14 @@ ERRStat GameRun(Game* _game)
 }
 /******************** Assistance Functions ********************/
 
-static Vector* CreatePlayers(char* _playerNames[], PlayerType _types[],
+static Player** CreatePlayers(char* _playerNames[], PlayerType _types[],
     int _numOfPlayers)
 {
     int i;
     Player* current;
-    Vector* players = VectorCreate(_numOfPlayers, 0);
-    if (NULL == players)
+    Player** arrPlayers;
+    arrPlayers = (Player**)malloc(_numOfPlayers * sizeof(Player*));
+    if (NULL == arrPlayers)
     {
         return NULL;
     }
@@ -148,12 +141,13 @@ static Vector* CreatePlayers(char* _playerNames[], PlayerType _types[],
         current = PlayerCreate(_playerNames[i], _types[i]);
         if (NULL == current)
         {
-            FreeMembers(players, _numOfPlayers);
+            FreeMembers(arrPlayers, i - 1);
+            free(*arrPlayers);
             return NULL;
         }
-        VectorAppend(players, current);
+        arrPlayers[i] = current;
     }
-    return players;
+    return arrPlayers;
 }
 
 static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
@@ -178,16 +172,15 @@ static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
     return ERROR_SUCCESS;
 }
 
-static void FreeMembers(Vector* _players, int _numOfPlayers) 
+static void FreeMembers(Player** _players, int _numOfPlayers) 
 {
     int i;
-    void* currentPlayer;
-    Player* current;
-    for (i = 0; i < _numOfPlayers; ++i)
+    if (_numOfPlayers > 1)
     {
-        VectorGet(_players, i, &currentPlayer);
-        current = (Player*)currentPlayer;
-        PlayerDestroy(&current);
+        for (i = 0; i < _numOfPlayers; ++i)
+        {
+            PlayerDestroy(&(_players[i]));
+        }
     }
 }
 
