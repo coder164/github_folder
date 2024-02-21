@@ -64,5 +64,7 @@ return value:	ERROR_SUCCESS: if all went well.
 errors:			ERROR_POINTER_NULL: if _round is invalid.*/
 ERRStat RunRound(Round* _round, TransferDirection _direction);
 
+int GetPoints(Round* _round, int _indexOfPlayer);
+
 
 #endif /* __ROUND_H__ */

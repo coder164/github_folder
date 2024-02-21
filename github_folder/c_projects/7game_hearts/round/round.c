@@ -159,6 +159,20 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     return ERROR_SUCCESS;
 }
 
+int GetPoints(Round* _round, int _indexOfPlayer)
+{
+    if (NULL == _round
+        || _indexOfPlayer >= _round -> m_numOfPlayers
+        || _indexOfPlayer < 0)
+        {
+            return -1;
+        }
+    else
+    {
+        return _round -> m_playersPoints[_indexOfPlayer];
+    }
+}
+
 /******************** Assistance Functions ********************/
 
 static int ThirdStage(Round* _round, Player** _players, Vector* _table, int _startingPlayer)

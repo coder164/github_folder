@@ -15,6 +15,8 @@ static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
     int _numOfPlayers);
 
 static ERRStat ExecuteRounds(Game* _game, Round* _round);
+static ERRStat AddPoints(Game* _game, Round* _round);
+
 
 static void FreeMembers(Player** _players, int _numOfPlayers);
 
@@ -89,8 +91,6 @@ ERRStat GameRun(Game* _game)
     Round* newRound = NULL;
     ERRStat resultRunRound;
     TransferDirection direction = LEFT;
-    void* currentPlayer;
-    char* name;
     int i;
     if (NULL == _game)
     {
@@ -107,17 +107,21 @@ ERRStat GameRun(Game* _game)
         RoundDestroy(&newRound);
         return resultRunRound;
     }
+    if (ERROR_SUCCESS != AddPoints(_game, newRound))
+    {
+        RoundDestroy(&newRound);
+        return ERROR_GENERAL;
+    }
+
+    for (i = 0; i != _game -> m_numOfPlayers; ++i)
+    {
+        printf("Player at %d has %d points\n", i, _game -> m_scores[i]);
+    }
 
     RoundDestroy(&newRound);
     return ERROR_SUCCESS;
 /*
-        RunRound() is didn't work at the time
-        resultRunRound = RunRound(newRound, direction);
-        if (resultRunRound != ERROR_SUCCESS)
-        {
-            return resultRunRound;
-        }
-        ExecuteRounds(_game, newRound);
+    ExecuteRounds(_game, newRound);
         to continue here Check for losers
     RoundDestroy(&newRound);
     return ERROR_SUCCESS;
@@ -184,6 +188,22 @@ static void FreeMembers(Player** _players, int _numOfPlayers)
     }
 }
 
+static ERRStat AddPoints(Game* _game, Round* _round)
+{
+    int i, numOfPlayers, points;
+    numOfPlayers = _game -> m_numOfPlayers;
+    for (i = 0; i != numOfPlayers; ++i)
+    {
+        points = GetPoints(_round, i);
+        if (points < 0)
+        {
+            return ERROR_GENERAL;
+        }
+        _game -> m_scores[i] += points;
+    }
+    return ERROR_SUCCESS;
+}
+
 /*
 static ERRStat ExecuteRounds(Game* _game, Round* _round)
 {
@@ -199,20 +219,21 @@ static ERRStat ExecuteRounds(Game* _game, Round* _round)
     }
     return ERROR_SUCCESS;
 }
+*/
 
 static TransferDirection ChangeDirection(TransferDirection _lastDirection)
 {
-    if (LEFT == _lastDirection)
+    switch(_lastDirection)
     {
-        return RIGHT;
-    }
-    if (RIGHT == _lastDirection)
-    {
-        return OPPOSITE;
-    }
-    if (OPPOSITE == _lastDirection)
-    {
-        return NO_TRANSFER;
+        case LEFT:
+            return RIGHT;
+        case RIGHT:
+            return OPPOSITE;
+        case OPPOSITE:
+            return NO_TRANSFER;
+        case NO_TRANSFER:
+            return LEFT;
+        default:
+            return NO_TRANSFER;
     }
 }
-*/
