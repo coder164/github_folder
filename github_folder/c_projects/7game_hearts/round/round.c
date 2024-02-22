@@ -94,6 +94,7 @@ Round* RoundCreate(Player** _players, int _numOfPlayers, int _roundNum)
     return newRound;
 }
 
+
 void RoundDestroy(Round** _round)
 {
     if (NULL == _round || NULL == *_round)
@@ -103,6 +104,18 @@ void RoundDestroy(Round** _round)
     free((*_round) -> m_playersPoints);
     DeckDestroy(&(*_round) -> m_deck);
     DestroyAllPlayers(_round);
+    free(*_round);
+    *_round = NULL;
+}
+
+void EmptyRound(Round** _round)
+{
+    if (NULL == _round || NULL == *_round)
+    {
+        return;
+    }
+    free((*_round) -> m_playersPoints);
+    DeckDestroy(&(*_round) -> m_deck);
     free(*_round);
     *_round = NULL;
 }
@@ -134,6 +147,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction)
     FirstStage(_round, _direction);
 
     putchar('\n');
+    printf("Direction = %d\n", _direction);
     PrintName(_round -> m_players[0]);
     PrintAllCards(_round -> m_players[0], INITIAL_NUM_OF_CARDS);
     putchar('\n');

@@ -14,9 +14,9 @@ static Player** CreatePlayers(char* _playerNames[], PlayerType _types[],
 static ERRStat CheckParamCreate(char* _playerNames[], PlayerType _types[],
     int _numOfPlayers);
 
-static ERRStat ExecuteRounds(Game* _game, Round* _round);
 static ERRStat AddPoints(Game* _game, Round* _round);
-
+static ERRStat Abort(ERRStat _status, Round* _round);
+static ERRStat IsEnded(Game* _game);
 
 static void FreeMembers(Player** _players, int _numOfPlayers);
 
@@ -96,36 +96,34 @@ ERRStat GameRun(Game* _game)
     {
         return ERROR_POINTER_NULL;
     }
-    newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers, 0);
-    if (NULL == newRound)
+    i = 0;
+    do
     {
-        return ERROR_GENERAL;
-    }
-    resultRunRound = RunRound(newRound, direction);
-    if (ERROR_SUCCESS != resultRunRound)
-    {
-        RoundDestroy(&newRound);
-        return resultRunRound;
-    }
-    if (ERROR_SUCCESS != AddPoints(_game, newRound))
-    {
-        RoundDestroy(&newRound);
-        return ERROR_GENERAL;
-    }
+        newRound = RoundCreate(_game -> m_players, _game -> m_numOfPlayers, i);
+        if (NULL == newRound)
+        {
+            return ERROR_GENERAL;
+        }
+        resultRunRound = RunRound(newRound, direction);
+        if (ERROR_SUCCESS != resultRunRound)
+        {
+            return Abort(resultRunRound, newRound);
+        }
+        if (ERROR_SUCCESS != AddPoints(_game, newRound))
+        {
+            return Abort(ERROR_GENERAL, newRound);
+        }
+        EmptyRound(&newRound);
+        ++i;
+        direction = ChangeDirection(direction);
+    } while (IsEnded(_game) == FALSE);
 
     for (i = 0; i != _game -> m_numOfPlayers; ++i)
     {
         printf("Player at %d has %d points\n", i, _game -> m_scores[i]);
     }
 
-    RoundDestroy(&newRound);
     return ERROR_SUCCESS;
-/*
-    ExecuteRounds(_game, newRound);
-        to continue here Check for losers
-    RoundDestroy(&newRound);
-    return ERROR_SUCCESS;
-*/
 }
 /******************** Assistance Functions ********************/
 
@@ -204,22 +202,25 @@ static ERRStat AddPoints(Game* _game, Round* _round)
     return ERROR_SUCCESS;
 }
 
-/*
-static ERRStat ExecuteRounds(Game* _game, Round* _round)
+static ERRStat Abort(ERRStat _status, Round* _round)
 {
-    int ToConntinue = TRUE;
-    TransferDirection direction = OPPOSITE;
-    while (ToConntinue)
-    {
-        direction = ChangeDirection(direction);
-        RunRound(_round, direction);
-        to continue here for points update
-        RoundDestroy(&_round);
-        ToConntinue = FALSE;
-    }
-    return ERROR_SUCCESS;
+    RoundDestroy(&_round);
+    return _status;
 }
-*/
+
+static ERRStat IsEnded(Game* _game)
+{
+    int i, numOfPlayers;
+    numOfPlayers = _game -> m_numOfPlayers;
+    for (i = 0; i != numOfPlayers; ++i)
+    {
+        if (_game -> m_scores[i] >= 100)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
 
 static TransferDirection ChangeDirection(TransferDirection _lastDirection)
 {

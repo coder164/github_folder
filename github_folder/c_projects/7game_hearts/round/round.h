@@ -66,5 +66,7 @@ ERRStat RunRound(Round* _round, TransferDirection _direction);
 
 int GetPoints(Round* _round, int _indexOfPlayer);
 
+void EmptyRound(Round** _round);
+
 
 #endif /* __ROUND_H__ */
