@@ -11,13 +11,13 @@ $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS)
 
 deck.o: deck.c deck.h $(P_CARDS)cards.h $(P_VEC)vector.h
-	$(CC) $(CFLAGS) -I $(P_CARDS) -I $(P_VEC) -c deck.c
+	$(CC) $(CFLAGS)  -c deck.c
 
 vector.o: $(P_VEC)vector.c $(P_VEC)vector.h
-	$(CC) $(CFLAGS) -I $(P_VEC) -c $(P_VEC)vector.c
+	$(CC) $(CFLAGS) -c $(P_VEC)vector.c
 
 testdeck.o: testdeck.c deck.h $(P_VEC)vector.h $(P_CARDS)cards.h
-	$(CC) $(CFLAGS) -I $(P_VEC) -I $(P_CARDS) -c testdeck.c
+	$(CC) $(CFLAGS) -c testdeck.c
 
 valgrind:
 	valgrind --log-file=V2.log --leak-check=full --track-origins=yes ./testdeck.out

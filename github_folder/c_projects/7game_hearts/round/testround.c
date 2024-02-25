@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include "round.h"
-#include "player.h"
-#include "errstat.h" /* for error statuses */
+#include "../player/player.h"
+#include "../errstat.h" /* for error statuses */
 
 #define NUM_OF_PLAYERS 4
 #define OK 0

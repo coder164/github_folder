@@ -64,8 +64,19 @@ return value:	ERROR_SUCCESS: if all went well.
 errors:			ERROR_POINTER_NULL: if _round is invalid.*/
 ERRStat RunRound(Round* _round, TransferDirection _direction);
 
+/*
+description:	get points from a given index of player.
+arguments:		_round: pointer to the Round object.
+                _indexOfPlayer: index of the player to get the points from
+return value:	integer of the points of the player
+errors:			-1: if _round is invalid or the index is invalid.*/
 int GetPoints(Round* _round, int _indexOfPlayer);
 
+/*
+description:	destroy the round but kipping the array of players existed.
+arguments:		_round: the round to destroy.
+return value:	none.
+errors:			none.*/
 void EmptyRound(Round** _round);
 
 

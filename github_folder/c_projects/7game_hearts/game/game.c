@@ -214,7 +214,7 @@ static ERRStat IsEnded(Game* _game)
     numOfPlayers = _game -> m_numOfPlayers;
     for (i = 0; i != numOfPlayers; ++i)
     {
-        if (_game -> m_scores[i] >= 100)
+        if (_game -> m_scores[i] >= MIN_POINTS_TO_FINISH)
         {
             return TRUE;
         }

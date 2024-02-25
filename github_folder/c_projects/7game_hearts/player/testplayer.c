@@ -1,10 +1,11 @@
 #include <stdio.h>
-#include <string.h> /* for strcmp */
-#include <stdlib.h>	/* for free() */
+#include <string.h> 		/* for strcmp */
+#include <stdlib.h>			/* for free() */
 
 #include "player.h"
-#include "cards.h"	/* for Test GiveCardToPlayer */
-#include "deck.h"	/* for Test GiveCardToPlayer */
+#include "../cards/cards.h"	/* for Test GiveCardToPlayer */
+#include "../deck/deck.h"	/* for Test GiveCardToPlayer */
+#include "../errstat.h" 	/* for error statuses */
 
 #define MAX_NAME_LENGTH 30
 #define OK 0

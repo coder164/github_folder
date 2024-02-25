@@ -5,6 +5,7 @@
 #include "../player/player.h" /* for PlayerType */
 #include "../errstat.h" /* for error statuses */
 
+#define MIN_POINTS_TO_FINISH (100)
 
 typedef struct Game Game;
 
@@ -28,6 +29,11 @@ return value:	none.
 errors:			none.*/
 void GameDestroy(Game** _game);
 
+/*
+description:	running the given game until finish, someone reaches the minimum point to end the game.
+arguments:		_game: pointer to the heap location of the game.
+return value:	none.
+errors:			none.*/
 ERRStat GameRun(Game* _game);
 
 

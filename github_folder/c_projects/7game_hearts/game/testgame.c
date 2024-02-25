@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "game.h"
-#include "round.h"
-#include "player.h"
-#include "errstat.h" /* for error statuses */
+#include "../round/round.h"
+#include "../player/player.h"
+#include "../errstat.h" /* for error statuses */
 #define NUM_OF_PLAYERS 4
 #define OK 0
 
@@ -12,10 +12,8 @@ static void TestGameRun(void);
 
 int main(void)
 {
-	/*
 	TestGameCreate();
 	TestGameDestory();
-	*/
 	TestGameRun();
 	return OK;
 }
@@ -89,6 +87,3 @@ static void TestGameRun(void)
 	resGameRun == ERROR_SUCCESS ? printf("- PASS\n") : printf("- FAIL \n");
 	GameDestroy(&ptrGame);
 }
-
-
-

@@ -1,8 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>	/* for free() in TestTakeCardFromDeck() */
+#include <stdlib.h>			/* for free() in TestTakeCardFromDeck() */
 
 #include "deck.h"
 #include "../../2genvector/vector.h"
+#include "../cards/cards.h"	/* for TestTakeCardFromDeck() */
 
 #define OK 0;
 
