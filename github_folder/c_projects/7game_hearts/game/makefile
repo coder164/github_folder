@@ -53,7 +53,3 @@ valgrind:
 
 clean:
 	rm -f $(TARGET) $(OBJS) V2.log
-	
-	
-	
-
