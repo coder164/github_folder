@@ -18,6 +18,7 @@ int main(void)
     if ('q' == numberOfHumans || 'Q' == numberOfHumans)
     {
         printf("The program will exit now...\n");
+        return OK;
     }
     
     return OK;
@@ -35,7 +36,7 @@ int GetNumHumans(void)
             CleanBuffer();
             break;
         }
-        else if (input < '1' || input > '4')
+        else if (input < '0' || input > '4')
         {
             printf("Sorry, the program only can take numbers between 0 - 4\n");
             printf("Please try again\n");
@@ -54,7 +55,9 @@ int GetNumHumans(void)
 
 static void CleanBuffer(void)
 {
-    while(getchar() != '\n')
+    while(TRUE)
     {
+        if ('\n' == getchar())
+        break;
     }
 }
