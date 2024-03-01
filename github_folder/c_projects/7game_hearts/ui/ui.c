@@ -6,14 +6,14 @@
 #define TRUE (1)
 #define ASCII_ZERO (48)
 
-int GetNumHumans(void);
+static int GetNumHumans(void);
+static void PrintWelcome(void);
 static void CleanBuffer(void);
 
 int main(void)
 {
     int numberOfHumans = 0;
-    printf("Welcome to The Game Hearts\n");
-    printf("Please type the number of human players (0 - 4)\n");
+    PrintWelcome();
     numberOfHumans = GetNumHumans();
     if ('q' == numberOfHumans || 'Q' == numberOfHumans)
     {
@@ -24,7 +24,12 @@ int main(void)
     return OK;
 }
 
-int GetNumHumans(void)
+static void PrintWelcome(void)
+{
+    printf("Welcome to The Game Hearts\n");
+}
+
+static int GetNumHumans(void)
 {
     char input;
     while (TRUE)
