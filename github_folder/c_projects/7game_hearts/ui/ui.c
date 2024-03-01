@@ -1,18 +1,25 @@
 #include <stdio.h>
+#include <stdlib.h>     /* for malloc */
 
 #include "ui.h"
 
 #define OK (0)
+#define FALSE (0)
 #define TRUE (1)
 #define ASCII_ZERO (48)
 
+static char** CreateArrayOfNames(int _numOfHumans);
 static int GetNumHumans(void);
+static void DestroyArrayOfNames(char*** _arrOfNames);
 static void PrintWelcome(void);
 static void CleanBuffer(void);
 
 int main(void)
 {
-    int numberOfHumans = 0;
+    int numberOfHumans, i;
+    char** arrNames;
+    numberOfHumans = 0;
+    i = 0;
     PrintWelcome();
     numberOfHumans = GetNumHumans();
     if ('q' == numberOfHumans || 'Q' == numberOfHumans)
@@ -20,8 +27,36 @@ int main(void)
         printf("The program will exit now...\n");
         return OK;
     }
-    
+    arrNames = CreateArrayOfNames(numberOfHumans);
+    if (NULL == arrNames)
+    {
+        printf("There is an issue with the memory of the computer.\nThe program will exit now.");
+        return OK;
+    }
+
+    DestroyArrayOfNames(&arrNames);
     return OK;
+}
+
+static void DestroyArrayOfNames(char*** _arrOfNames)
+{
+    if (NULL == _arrOfNames)
+    {
+        return;
+    }
+    free(*_arrOfNames);
+    *_arrOfNames = NULL;
+}
+
+static char** CreateArrayOfNames(int _numOfHumans)
+{
+    char** arrayOfNames;
+    arrayOfNames = (char**)malloc(_numOfHumans * sizeof(char*));
+    if (NULL == arrayOfNames)
+    {
+        return NULL;
+    }
+    return arrayOfNames;
 }
 
 static void PrintWelcome(void)
